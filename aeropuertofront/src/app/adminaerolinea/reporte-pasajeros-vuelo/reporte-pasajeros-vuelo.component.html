@@ -1,0 +1,160 @@
+<div class="page-container">
+
+  <section class="header-card">
+    <span class="badge">Consultas</span>
+    <h1>Reporte de pasajeros por vuelo</h1>
+    <p>Consulte los pasajeros registrados en un vuelo y genere archivos PDF o Excel.</p>
+  </section>
+
+  <section class="steps">
+
+    <article class="step active">
+      <div class="step-number">1</div>
+      <div>
+        <h3>Filtro</h3>
+        <p>Ingrese el número de vuelo.</p>
+      </div>
+    </article>
+
+    <article class="step" [class.active]="busquedaRealizada">
+      <div class="step-number">2</div>
+      <div>
+        <h3>Consulta</h3>
+        <p>Visualice los pasajeros encontrados.</p>
+      </div>
+    </article>
+
+    <article class="step" [class.active]="pasajeros.length > 0">
+      <div class="step-number">3</div>
+      <div>
+        <h3>Exportar</h3>
+        <p>Genere PDF o Excel.</p>
+      </div>
+    </article>
+
+  </section>
+
+  <section class="form-card">
+    <form [formGroup]="formulario" (ngSubmit)="buscar()">
+
+      <div class="form-grid">
+
+        <div class="form-field">
+          <label for="numeroVuelo">Número de vuelo</label>
+          <input
+            id="numeroVuelo"
+            type="text"
+            formControlName="numeroVuelo"
+            placeholder="Ejemplo: VU-001">
+
+          <small
+            class="error-field"
+            *ngIf="formulario.get('numeroVuelo')?.touched && formulario.get('numeroVuelo')?.hasError('required')">
+            El número de vuelo es obligatorio.
+          </small>
+
+          <small
+            class="error-field"
+            *ngIf="formulario.get('numeroVuelo')?.touched && formulario.get('numeroVuelo')?.hasError('maxlength')">
+            El número de vuelo no puede superar 30 caracteres.
+          </small>
+        </div>
+
+      </div>
+
+      <div class="acciones">
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="cargando">
+          {{ cargando ? 'Buscando...' : 'Buscar' }}
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="limpiar()"
+          [disabled]="cargando || descargandoPdf || descargandoExcel">
+          Limpiar
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-outline"
+          (click)="descargarPdf()"
+          [disabled]="pasajeros.length === 0 || descargandoPdf">
+          {{ descargandoPdf ? 'Generando PDF...' : 'PDF / Imprimir' }}
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-outline"
+          (click)="descargarExcel()"
+          [disabled]="pasajeros.length === 0 || descargandoExcel">
+          {{ descargandoExcel ? 'Generando Excel...' : 'Excel' }}
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-light"
+          (click)="nuevaConsulta()">
+          Nueva consulta
+        </button>
+      </div>
+
+    </form>
+  </section>
+
+  <div class="mensaje error" *ngIf="mensajeError">
+    {{ mensajeError }}
+  </div>
+
+  <div class="mensaje exito" *ngIf="mensajeExito">
+    {{ mensajeExito }}
+  </div>
+
+  <section class="list-card" *ngIf="busquedaRealizada">
+
+    <div class="list-header">
+      <div>
+        <h2>Pasajeros encontrados</h2>
+        <p *ngIf="pasajeros.length > 0">
+          Total de pasajeros: {{ pasajeros.length }}
+        </p>
+        <p *ngIf="pasajeros.length === 0">
+          No hay datos para mostrar.
+        </p>
+      </div>
+    </div>
+
+    <div class="table-wrapper" *ngIf="pasajeros.length > 0">
+      <table>
+        <thead>
+        <tr>
+          <th>No.</th>
+          <th>Nombre del pasajero</th>
+          <th>Pasaporte</th>
+          <th>Nacionalidad</th>
+          <th>Edad</th>
+          <th>Teléfono</th>
+          <th>Correo electrónico</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr *ngFor="let pasajero of pasajeros; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ pasajero.nombrePasajero || 'N/A' }}</td>
+          <td>{{ pasajero.numeroPasaporte || 'N/A' }}</td>
+          <td>{{ pasajero.nacionalidad || 'N/A' }}</td>
+          <td>{{ pasajero.edad || 'N/A' }}</td>
+          <td>{{ pasajero.telefono || 'N/A' }}</td>
+          <td>{{ pasajero.correoElectronico || 'N/A' }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+
+</div>

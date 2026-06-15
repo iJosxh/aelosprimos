@@ -1,0 +1,298 @@
+<div class="registro-public-page">
+
+  <header class="public-navbar">
+    <div class="brand" routerLink="/">
+      <div class="brand-icon">ALP</div>
+      <div>
+        <strong>Aeropuerto Los Primos</strong>
+        <span>Portal público</span>
+      </div>
+    </div>
+
+    <nav>
+      <a routerLink="/">Inicio</a>
+      <a routerLink="/consulta-vuelo">Consultar vuelo</a>
+      <a routerLink="/login">Iniciar sesión</a>
+    </nav>
+  </header>
+
+  <main class="registro-main">
+
+    <section class="hero-registro">
+      <div class="hero-info">
+        <span class="badge">Registro público</span>
+        <h1>Registro de Pasajero</h1>
+        <p>
+          Crea tu usuario para reservar vuelos, gestionar tus datos y acceder a los servicios del Aeropuerto Los Primos.
+        </p>
+      </div>
+
+      <div class="hero-side-card">
+        <span>🛫</span>
+        <strong>Proceso seguro</strong>
+        <small>Completa tus datos y valida tu registro</small>
+      </div>
+    </section>
+
+    <section class="registro-card">
+
+      <div class="card-header">
+        <div class="card-icon">🧾</div>
+        <div>
+          <h2>Datos del pasajero</h2>
+          <p>Ingresa la información solicitada para crear tu cuenta.</p>
+        </div>
+      </div>
+
+      <form [formGroup]="form">
+
+        <section class="form-section">
+          <div class="section-title">
+            <span>1</span>
+            <div>
+              <h3>Datos personales</h3>
+              <p>Información de identificación del pasajero.</p>
+            </div>
+          </div>
+
+          <div class="form-grid">
+
+            <div class="form-group">
+              <label>No. Pasaporte</label>
+              <input
+                type="text"
+                formControlName="pasaporte"
+                placeholder="Ejemplo: 123456789012345"
+                maxlength="15"
+                (keypress)="soloNumeros($event)"
+                (blur)="validarPasaporte()">
+
+              <small class="field-warning" *ngIf="campoInvalido(form, 'pasaporte')">
+                Debe ingresar un pasaporte válido de 15 dígitos.
+              </small>
+
+              <small class="field-warning" *ngIf="pasaporteExiste">
+                El número de pasaporte ingresado ya cuenta con usuario.
+              </small>
+            </div>
+
+            <div class="form-group">
+              <label>Nombre Completo</label>
+              <input
+                type="text"
+                formControlName="nombre"
+                placeholder="Nombre y apellido"
+                (keypress)="soloLetras($event)">
+
+              <small class="field-warning" *ngIf="campoInvalido(form, 'nombre')">
+                Debe ingresar el nombre completo.
+              </small>
+            </div>
+
+            <div class="form-group">
+              <label>Fecha de Nacimiento</label>
+              <input
+                type="date"
+                formControlName="fechaNacimiento">
+
+              <small class="field-warning" *ngIf="form.get('fechaNacimiento')?.hasError('required') && form.get('fechaNacimiento')?.touched">
+                Debe ingresar la fecha de nacimiento.
+              </small>
+
+              <small class="field-warning" *ngIf="form.get('fechaNacimiento')?.hasError('menorDeEdad') && form.get('fechaNacimiento')?.touched">
+                El pasajero debe ser mayor de edad.
+              </small>
+            </div>
+
+            <div class="form-group">
+              <label>Nacionalidad</label>
+              <input
+                type="text"
+                formControlName="nacionalidad"
+                placeholder="Ejemplo: Guatemalteca"
+                (keypress)="soloLetras($event)">
+
+              <small class="field-warning" *ngIf="campoInvalido(form, 'nacionalidad')">
+                Debe ingresar la nacionalidad.
+              </small>
+            </div>
+
+          </div>
+        </section>
+
+        <section class="form-section contact-section">
+          <div class="section-title">
+            <span>2</span>
+            <div>
+              <h3>Contacto</h3>
+              <p>Datos para comunicación y emergencias.</p>
+            </div>
+          </div>
+
+          <div class="form-grid">
+
+            <div class="form-group">
+              <label>Correo</label>
+              <input
+                type="email"
+                formControlName="correo"
+                placeholder="correo@ejemplo.com"
+                (blur)="validarCorreo()">
+
+              <small class="field-warning" *ngIf="campoInvalido(form, 'correo')">
+                Debe ingresar un correo válido.
+              </small>
+
+              <small class="field-warning" *ngIf="correoExiste">
+                El correo ya existe.
+              </small>
+            </div>
+
+            <div class="form-group">
+              <label>Código Área</label>
+              <input
+                type="text"
+                formControlName="codigoArea"
+                placeholder="Ejemplo: 502"
+                maxlength="3"
+                (keypress)="soloNumeros($event)">
+
+              <small class="field-warning" *ngIf="campoInvalido(form, 'codigoArea')">
+                Debe ingresar el código de área.
+              </small>
+            </div>
+
+            <div class="form-group">
+              <label>Teléfono</label>
+              <input
+                type="text"
+                formControlName="telefono"
+                placeholder="8 dígitos"
+                maxlength="8"
+                (keypress)="soloNumeros($event)">
+
+              <small class="field-warning" *ngIf="campoInvalido(form, 'telefono')">
+                Debe ingresar un teléfono de 8 dígitos.
+              </small>
+            </div>
+
+            <div class="form-group">
+              <label>Emergencia</label>
+              <input
+                type="text"
+                formControlName="emergencia"
+                placeholder="Teléfono de emergencia"
+                maxlength="8"
+                (keypress)="soloNumeros($event)">
+
+              <small class="field-warning" *ngIf="campoInvalido(form, 'emergencia')">
+                Debe ingresar un teléfono de emergencia de 8 dígitos.
+              </small>
+            </div>
+
+            <div class="form-group full">
+              <label>Dirección</label>
+              <input
+                type="text"
+                formControlName="direccion"
+                placeholder="Dirección completa">
+
+              <small class="field-warning" *ngIf="campoInvalido(form, 'direccion')">
+                Debe ingresar la dirección.
+              </small>
+            </div>
+
+          </div>
+        </section>
+
+      </form>
+
+      <section class="form-section password-section" *ngIf="mostrarModal" [formGroup]="usuarioForm">
+        <div class="section-title">
+          <span>3</span>
+          <div>
+            <h3>Seguridad</h3>
+            <p>Crea las credenciales para acceder al sistema.</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label>Usuario</label>
+            <input
+              type="text"
+              formControlName="username"
+              placeholder="Ejemplo: cristian123">
+
+            <small class="field-warning" *ngIf="campoInvalido(usuarioForm, 'username')">
+              Debe ingresar un usuario válido. Mínimo 4 caracteres.
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label>Contraseña</label>
+            <input
+              type="password"
+              formControlName="password"
+              placeholder="Mínimo 6 caracteres">
+
+            <small class="field-warning" *ngIf="campoInvalido(usuarioForm, 'password')">
+              El formato de la contraseña no es válido.
+            </small>
+          </div>
+
+          <div class="password-rules full">
+            <strong>La contraseña debe incluir:</strong>
+            <ul>
+              <li>Al menos una letra mayúscula</li>
+              <li>Al menos un número</li>
+              <li>Al menos un carácter especial</li>
+              <li>Mínimo 6 caracteres</li>
+            </ul>
+          </div>
+
+        </div>
+      </section>
+
+      <div class="acciones" *ngIf="!mostrarModal">
+        <button
+          type="button"
+          class="btn-secundario"
+          (click)="limpiar()">
+
+          Limpiar
+        </button>
+
+        <button
+          type="button"
+          class="btn-principal"
+          (click)="registrar()">
+
+          Validar
+        </button>
+      </div>
+
+      <div class="acciones" *ngIf="mostrarModal">
+        <button
+          type="button"
+          class="btn-secundario"
+          (click)="cancelarRegistro()">
+
+          Cancelar
+        </button>
+
+        <button
+          type="button"
+          class="btn-principal"
+          (click)="registrarCompleto()">
+
+          Crear usuario
+        </button>
+      </div>
+
+    </section>
+
+  </main>
+
+</div>

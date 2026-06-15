@@ -1,0 +1,477 @@
+<div class="vuelo-container">
+
+  <section class="header-card">
+    <span class="badge">Administrador de abordaje</span>
+    <h1>Abordaje de vuelos</h1>
+    <p>
+      Gestiona el inicio de abordaje, valida el pase de abordar,
+      registra maletas presentadas y finaliza el proceso del vuelo.
+    </p>
+  </section>
+
+  <section class="form-card">
+
+    <div class="steps">
+      <div class="step" [class.active]="pasoActual === 1">
+        <span>1</span>
+        <div>
+          <strong>Seleccionar vuelo</strong>
+          <small>Programados o en abordaje</small>
+        </div>
+      </div>
+
+      <div class="step-line"></div>
+
+      <div class="step" [class.active]="pasoActual === 2">
+        <span>2</span>
+        <div>
+          <strong>Buscar pasajero</strong>
+          <small>Validar pasaporte</small>
+        </div>
+      </div>
+
+      <div class="step-line"></div>
+
+      <div class="step" [class.active]="pasoActual === 3">
+        <span>3</span>
+        <div>
+          <strong>Registrar abordaje</strong>
+          <small>Equipaje y boleto</small>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="mensajeError" class="mensaje error">
+      {{ mensajeError }}
+    </div>
+
+    <div *ngIf="mensajeExito" class="mensaje exito">
+      {{ mensajeExito }}
+    </div>
+
+    <div *ngIf="!vueloSeleccionado" class="resumen-card">
+      <h3>Seleccione un vuelo para continuar</h3>
+      <p>
+        Primero puede iniciar abordaje de vuelos programados próximos o seleccionar un vuelo que ya esté en estado de abordaje.
+      </p>
+    </div>
+
+    <div *ngIf="vueloSeleccionado" class="resumen-card">
+      <h3>Vuelo seleccionado</h3>
+      <p>
+        <strong>{{ vueloSeleccionado.codigoVuelo }}</strong>
+        · {{ obtenerRutaCompleta(vueloSeleccionado) }}
+        · {{ vueloSeleccionado.fechaSalida | date:'dd/MM/yyyy HH:mm' }}
+      </p>
+    </div>
+
+    <section class="ruta-visual-card" *ngIf="vueloSeleccionado">
+
+      <div class="ruta-visual-header">
+        <div>
+          <span class="ruta-label">Ruta completa</span>
+          <h3>{{ obtenerRutaCompleta(vueloSeleccionado) }}</h3>
+        </div>
+
+        <span class="ruta-chip">
+          {{ obtenerTextoEscalas(vueloSeleccionado) }}
+        </span>
+      </div>
+
+      <div class="ruta-timeline">
+
+        <article class="ruta-stop origen">
+          <span class="stop-dot"></span>
+          <small>Origen</small>
+          <strong>{{ vueloSeleccionado.origen }}</strong>
+          <em>Sale: {{ vueloSeleccionado.fechaSalida | date:'dd/MM/yyyy HH:mm' }}</em>
+        </article>
+
+        <ng-container *ngFor="let escala of obtenerEscalas(vueloSeleccionado)">
+          <div class="ruta-line"></div>
+
+          <article class="ruta-stop escala">
+            <span class="stop-dot"></span>
+            <small>Escala {{ escala.orden }}</small>
+            <strong>{{ escala.aeropuertoNombre }}</strong>
+            <p>{{ escala.ciudad }}, {{ escala.pais }}</p>
+            <em>
+              Llega: {{ escala.fechaLlegada | date:'dd/MM/yyyy HH:mm' }}
+              <br>
+              Sale: {{ escala.fechaSalida | date:'dd/MM/yyyy HH:mm' }}
+            </em>
+          </article>
+        </ng-container>
+
+        <div class="ruta-line"></div>
+
+        <article class="ruta-stop destino">
+          <span class="stop-dot"></span>
+          <small>Destino</small>
+          <strong>{{ vueloSeleccionado.destino }}</strong>
+          <em>Llega: {{ vueloSeleccionado.fechaLlegada | date:'dd/MM/yyyy HH:mm' }}</em>
+        </article>
+
+      </div>
+
+    </section>
+
+    <div *ngIf="vueloSeleccionado">
+
+      <div class="info-grid">
+
+        <div class="info-item">
+          <span>Número de vuelo</span>
+          <strong>{{ vueloSeleccionado.codigoVuelo }}</strong>
+        </div>
+
+        <div class="info-item">
+          <span>Aerolínea</span>
+          <strong>{{ vueloSeleccionado.aerolineaNombre }}</strong>
+        </div>
+
+        <div class="info-item">
+          <span>Ruta</span>
+          <strong>{{ obtenerRutaCompleta(vueloSeleccionado) }}</strong>
+        </div>
+
+        <div class="info-item">
+          <span>Escalas</span>
+          <strong>{{ obtenerTextoEscalas(vueloSeleccionado) }}</strong>
+        </div>
+
+        <div class="info-item">
+          <span>Fecha y hora de salida</span>
+          <strong>{{ vueloSeleccionado.fechaSalida | date:'dd/MM/yyyy HH:mm' }}</strong>
+        </div>
+
+        <div class="info-item">
+          <span>Fecha y hora de llegada</span>
+          <strong>{{ vueloSeleccionado.fechaLlegada | date:'dd/MM/yyyy HH:mm' }}</strong>
+        </div>
+
+        <div class="info-item">
+          <span>Estado</span>
+          <strong>{{ vueloSeleccionado.estado }}</strong>
+        </div>
+
+      </div>
+
+      <form [formGroup]="formBusqueda" class="form-abordaje" (ngSubmit)="buscarPasajero()">
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label>Número de pasaporte</label>
+
+            <input
+              type="text"
+              formControlName="noPasaporte"
+              placeholder="Ingrese el número de pasaporte">
+
+            <small
+              class="field-warning"
+              *ngIf="formBusqueda.get('noPasaporte')?.invalid && formBusqueda.get('noPasaporte')?.touched">
+              El número de pasaporte es obligatorio.
+            </small>
+          </div>
+
+        </div>
+
+        <div class="acciones">
+          <button
+            type="button"
+            class="btn-secundario"
+            (click)="nuevoVuelo()"
+            [disabled]="cargandoVuelos || finalizandoAbordaje">
+            Nuevo vuelo
+          </button>
+
+          <button
+            type="submit"
+            class="btn-principal"
+            [disabled]="buscandoPasajero">
+            {{ buscandoPasajero ? 'Buscando...' : 'Buscar pasajero' }}
+          </button>
+
+          <button
+            type="button"
+            class="btn-peligro"
+            (click)="finalizarAbordaje()"
+            [disabled]="finalizandoAbordaje">
+            {{ finalizandoAbordaje ? 'Finalizando...' : 'Finalizar abordaje' }}
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+
+  </section>
+
+  <section *ngIf="pasajeroEncontrado" class="form-card">
+
+    <div class="list-header">
+      <div>
+        <h2>Datos del pasajero</h2>
+        <p>Información del pase de abordar y equipaje registrado.</p>
+      </div>
+    </div>
+
+    <div class="info-grid">
+
+      <div class="info-item">
+        <span>Pasajero</span>
+        <strong>{{ pasajeroEncontrado.nombrePasajero }}</strong>
+      </div>
+
+      <div class="info-item">
+        <span>Pasaporte</span>
+        <strong>{{ pasajeroEncontrado.noPasaporte }}</strong>
+      </div>
+
+      <div class="info-item">
+        <span>Pase de abordar</span>
+        <strong>{{ pasajeroEncontrado.codigoPaseAbordar }}</strong>
+      </div>
+
+      <div class="info-item">
+        <span>Clase</span>
+        <strong>{{ pasajeroEncontrado.claseVuelo }}</strong>
+      </div>
+
+      <div class="info-item">
+        <span>Asiento</span>
+        <strong>{{ pasajeroEncontrado.asiento || 'Sin asiento' }}</strong>
+      </div>
+
+      <div class="info-item">
+        <span>Estado</span>
+        <strong>{{ pasajeroEncontrado.estado }}</strong>
+      </div>
+
+      <div class="info-item">
+        <span>Maletas reservadas</span>
+        <strong>{{ pasajeroEncontrado.cantidadMaletasReservadas }}</strong>
+      </div>
+
+      <div class="info-item">
+        <span>Maletas presentadas</span>
+        <strong>{{ pasajeroEncontrado.cantidadMaletasPresentadas }}</strong>
+      </div>
+
+      <div class="info-item">
+        <span>Maletas extra</span>
+        <strong>{{ pasajeroEncontrado.maletasExtra }}</strong>
+      </div>
+
+      <div class="info-item">
+        <span>Recargo</span>
+        <strong>Q. {{ pasajeroEncontrado.recargoEquipaje | number:'1.2-2' }}</strong>
+      </div>
+
+    </div>
+
+    <form [formGroup]="formAbordaje" class="form-abordaje" (ngSubmit)="abordarPasajero()">
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Cantidad de maletas presentadas</label>
+
+          <input
+            type="number"
+            min="0"
+            formControlName="cantidadMaletasPresentadas"
+            placeholder="Ejemplo: 2">
+
+          <small
+            class="field-warning"
+            *ngIf="formAbordaje.get('cantidadMaletasPresentadas')?.invalid && formAbordaje.get('cantidadMaletasPresentadas')?.touched">
+            Debe ingresar una cantidad válida.
+          </small>
+        </div>
+
+      </div>
+
+      <div
+        class="pesos-card"
+        *ngIf="pesosMaletas.length > 0"
+        formArrayName="pesosMaletas">
+
+        <div class="pesos-header">
+          <h3>Peso de maletas</h3>
+          <p>Ingrese el peso individual de cada maleta presentada.</p>
+        </div>
+
+        <div class="pesos-grid">
+          <div
+            class="form-group"
+            *ngFor="let control of pesosMaletas.controls; let i = index">
+
+            <label>Maleta {{ i + 1 }} - Peso</label>
+
+            <input
+              type="number"
+              min="0.01"
+              step="0.01"
+              [formControlName]="i"
+              placeholder="Ejemplo: 23.50">
+
+            <small
+              class="field-warning"
+              *ngIf="control.invalid && control.touched">
+              El peso debe ser mayor a 0.
+            </small>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="acciones">
+        <button
+          type="submit"
+          class="btn-principal"
+          [disabled]="abordandoPasajero">
+          {{ abordandoPasajero ? 'Abordando...' : 'Abordar pasajero' }}
+        </button>
+      </div>
+
+    </form>
+
+  </section>
+
+  <!-- VUELOS PROGRAMADOS PRÓXIMOS -->
+  <section class="list-card" *ngIf="pasoActual === 1">
+
+    <div class="list-header">
+      <div>
+        <h2>Vuelos programados próximos</h2>
+        <p>Vuelos programados que ya pueden iniciar abordaje.</p>
+      </div>
+
+      <button
+        type="button"
+        class="btn-secundario"
+        (click)="cargarDatosIniciales()"
+        [disabled]="cargandoVuelos">
+        {{ cargandoVuelos ? 'Cargando...' : 'Actualizar' }}
+      </button>
+    </div>
+
+    <div *ngIf="cargandoVuelos" class="empty">
+      Cargando vuelos programados próximos...
+    </div>
+
+    <div *ngIf="!cargandoVuelos" class="table-responsive">
+      <table>
+        <thead>
+        <tr>
+          <th>Número de vuelo</th>
+          <th>Aerolínea</th>
+          <th>Ruta</th>
+          <th>Escalas</th>
+          <th>Salida</th>
+          <th>Estado</th>
+          <th>Acción</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr *ngFor="let vuelo of vuelosProgramados">
+          <td>{{ vuelo.codigoVuelo }}</td>
+          <td>{{ vuelo.aerolineaNombre }}</td>
+          <td class="ruta-tabla">{{ obtenerRutaCompleta(vuelo) }}</td>
+          <td>
+            <span class="estado">{{ obtenerTextoEscalas(vuelo) }}</span>
+          </td>
+          <td>{{ vuelo.fechaSalida | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>
+            <span class="estado">{{ vuelo.estado }}</span>
+          </td>
+          <td>
+            <button
+              type="button"
+              class="btn-principal btn-tabla"
+              (click)="iniciarAbordaje(vuelo)"
+              [disabled]="iniciandoAbordajeId === vuelo.idVuelo">
+              {{ iniciandoAbordajeId === vuelo.idVuelo ? 'Iniciando...' : 'Iniciar abordaje' }}
+            </button>
+          </td>
+        </tr>
+
+        <tr *ngIf="vuelosProgramados.length === 0">
+          <td colspan="7" class="empty">
+            No hay vuelos programados próximos para iniciar abordaje.
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+
+  <!-- VUELOS EN ABORDAJE -->
+  <section class="list-card" *ngIf="pasoActual === 1">
+
+    <div class="list-header">
+      <div>
+        <h2>Vuelos disponibles para abordar</h2>
+        <p>Listado de vuelos que ya se encuentran en proceso de abordaje.</p>
+      </div>
+    </div>
+
+    <div *ngIf="cargandoVuelos" class="empty">
+      Cargando vuelos disponibles...
+    </div>
+
+    <div *ngIf="!cargandoVuelos" class="table-responsive">
+      <table>
+        <thead>
+        <tr>
+          <th>Número de vuelo</th>
+          <th>Aerolínea</th>
+          <th>Ruta</th>
+          <th>Escalas</th>
+          <th>Salida</th>
+          <th>Estado</th>
+          <th>Acción</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr
+          *ngFor="let vuelo of vuelos"
+          [class.selected-row]="vueloSeleccionado?.idVuelo === vuelo.idVuelo">
+          <td>{{ vuelo.codigoVuelo }}</td>
+          <td>{{ vuelo.aerolineaNombre }}</td>
+          <td class="ruta-tabla">{{ obtenerRutaCompleta(vuelo) }}</td>
+          <td>
+            <span class="estado">{{ obtenerTextoEscalas(vuelo) }}</span>
+          </td>
+          <td>{{ vuelo.fechaSalida | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>
+            <span class="estado">{{ vuelo.estado }}</span>
+          </td>
+          <td>
+            <button
+              type="button"
+              class="btn-principal btn-tabla"
+              (click)="seleccionarVuelo(vuelo)">
+              Seleccionar
+            </button>
+          </td>
+        </tr>
+
+        <tr *ngIf="vuelos.length === 0">
+          <td colspan="7" class="empty">
+            No hay vuelos disponibles para abordaje.
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+
+</div>

@@ -1,0 +1,76 @@
+<div class="aerolinea-container">
+
+  <div class="header-card">
+    <div>
+      <span class="badge">Administración</span>
+      <h1>Registrar Aerolínea</h1>
+      <p>Registra las aerolíneas que operarán dentro del sistema aeroportuario.</p>
+    </div>
+  </div>
+
+  <div class="form-card">
+
+    <div class="mensaje error" *ngIf="mensajeError">
+      {{ mensajeError }}
+    </div>
+
+    <div class="mensaje exito" *ngIf="mensajeExito">
+      {{ mensajeExito }}
+    </div>
+
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>Nombre de la aerolínea</label>
+        <input
+          type="text"
+          [(ngModel)]="aerolinea.nombre"
+          placeholder="Ejemplo: Aerolínea Los Primos">
+      </div>
+
+    </div>
+
+    <div class="acciones">
+      <button type="button" class="btn-secundario" (click)="limpiarFormulario()">
+        Limpiar
+      </button>
+
+      <button type="button" class="btn-principal" (click)="guardar()">
+        Guardar
+      </button>
+    </div>
+
+  </div>
+
+  <div class="list-card" *ngIf="aerolineas.length > 0">
+
+    <div class="list-header">
+      <h2>Aerolíneas registradas</h2>
+      <span>{{ aerolineas.length }} registros</span>
+    </div>
+
+    <table>
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Estado</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr *ngFor="let item of aerolineas">
+        <td>{{ item.idAerolinea }}</td>
+        <td>{{ item.nombre }}</td>
+        <td>
+            <span class="estado">
+              {{ item.estado || item.codigoEstado || 'Activo' }}
+            </span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+</div>

@@ -1,0 +1,120 @@
+<div class="avion-container">
+
+  <div class="header-card">
+    <div>
+      <span class="badge">Administración</span>
+      <h1>Registrar Avión</h1>
+      <p>Registra aviones por aerolínea y genera automáticamente sus asientos.</p>
+    </div>
+  </div>
+
+  <div class="form-card">
+
+    <div class="mensaje error" *ngIf="mensajeError">
+      {{ mensajeError }}
+    </div>
+
+    <div class="mensaje exito" *ngIf="mensajeExito">
+      {{ mensajeExito }}
+    </div>
+
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>Aerolínea</label>
+        <select [(ngModel)]="avion.idAerolinea">
+          <option [ngValue]="0">Seleccione una aerolínea</option>
+          <option *ngFor="let aerolinea of aerolineas" [ngValue]="aerolinea.idAerolinea">
+            {{ aerolinea.nombre }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Modelo</label>
+        <input
+          type="text"
+          [(ngModel)]="avion.modelo"
+          placeholder="Ejemplo: Boeing 737">
+      </div>
+
+      <div class="form-group">
+        <label>Marca</label>
+        <input
+          type="text"
+          [(ngModel)]="avion.marca"
+          placeholder="Ejemplo: Boeing">
+      </div>
+
+      <div class="form-group">
+        <label>Año</label>
+        <input
+          type="number"
+          [(ngModel)]="avion.anio"
+          placeholder="Ejemplo: 2020">
+      </div>
+
+      <div class="form-group">
+        <label>Capacidad</label>
+        <input
+          type="number"
+          [(ngModel)]="avion.capacidad"
+          placeholder="Ejemplo: 180">
+      </div>
+
+    </div>
+
+    <div class="acciones">
+      <button type="button" class="btn-secundario" (click)="limpiarFormulario()">
+        Limpiar
+      </button>
+
+      <button type="button" class="btn-principal" (click)="guardar()">
+        Guardar
+      </button>
+    </div>
+
+  </div>
+
+  <div class="list-card" *ngIf="aviones.length > 0">
+
+    <div class="list-header">
+      <h2>Aviones registrados</h2>
+      <span>{{ aviones.length }} registros</span>
+    </div>
+
+    <table>
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Aerolínea</th>
+        <th>Marca</th>
+        <th>Modelo</th>
+        <th>Año</th>
+        <th>Capacidad</th>
+        <th>Asientos</th>
+        <th>Estado</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr *ngFor="let item of aviones">
+        <td>{{ item.idAvion }}</td>
+        <td>{{ item.nombreAerolinea }}</td>
+        <td>{{ item.marca }}</td>
+        <td>{{ item.modelo }}</td>
+        <td>{{ item.anio }}</td>
+        <td>{{ item.capacidad }}</td>
+        <td>{{ item.totalAsientosGenerados }}</td>
+        <td>
+            <span class="estado">
+              {{ item.estado || item.codigoEstado || 'Activo' }}
+            </span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+</div>

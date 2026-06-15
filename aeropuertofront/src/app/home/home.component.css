@@ -1,0 +1,558 @@
+* {
+  box-sizing: border-box;
+}
+
+.home-page {
+  min-height: 100vh;
+  background: #f4f7fb;
+  color: #0f172a;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* NAVBAR */
+
+.navbar {
+  height: 88px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(14px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 56px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #2563eb, #38bdf8);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.28);
+}
+
+.brand h2 {
+  margin: 0;
+  font-size: 22px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.brand span {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.nav-links {
+  display: flex;
+  gap: 32px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #334155;
+  font-weight: 700;
+  transition: 0.25s ease;
+}
+
+.nav-links a:hover {
+  color: #2563eb;
+}
+
+.nav-actions {
+  display: flex;
+  gap: 14px;
+}
+
+button {
+  font-family: inherit;
+}
+
+.btn-primary,
+.btn-outline,
+.btn-glass {
+  border: none;
+  padding: 12px 20px;
+  border-radius: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-primary {
+  background: #2563eb;
+  color: white;
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.22);
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+}
+
+.btn-outline {
+  background: white;
+  color: #2563eb;
+  border: 1px solid #cbd5e1;
+}
+
+.btn-outline:hover {
+  background: #eff6ff;
+  transform: translateY(-2px);
+}
+
+.btn-glass {
+  background: rgba(255, 255, 255, 0.16);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+.btn-glass:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.large {
+  padding: 15px 26px;
+}
+
+/* HERO */
+
+.hero {
+  min-height: 620px;
+  padding: 70px 56px;
+  display: grid;
+  grid-template-columns: 1.3fr 0.9fr;
+  gap: 46px;
+  align-items: center;
+  background:
+    radial-gradient(circle at top right, rgba(56, 189, 248, 0.32), transparent 32%),
+    linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0284c7 100%);
+  color: white;
+  overflow: hidden;
+}
+
+.hero-content {
+  max-width: 760px;
+}
+
+.hero-label {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.14);
+  padding: 9px 16px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 800;
+  margin-bottom: 20px;
+}
+
+.hero h1 {
+  font-size: 58px;
+  line-height: 1.05;
+  margin: 0 0 22px;
+  letter-spacing: -1px;
+}
+
+.hero p {
+  font-size: 18px;
+  color: #dbeafe;
+  max-width: 680px;
+  line-height: 1.7;
+  margin-bottom: 30px;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 16px;
+}
+
+/* HERO FLIGHT CARD */
+
+.hero-card {
+  background: rgba(255, 255, 255, 0.94);
+  color: #0f172a;
+  border-radius: 30px;
+  padding: 30px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.flight-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.flight-top span {
+  color: #64748b;
+  font-weight: 700;
+}
+
+.flight-top strong {
+  background: #dcfce7;
+  color: #166534;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.flight-route {
+  background: #f8fafc;
+  border-radius: 24px;
+  padding: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  border: 1px solid #e2e8f0;
+}
+
+.flight-route h3 {
+  margin: 0;
+  font-size: 36px;
+  font-weight: 900;
+}
+
+.flight-route p {
+  color: #64748b;
+  margin: 4px 0 0;
+  font-size: 14px;
+}
+
+.plane-line {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 20px;
+}
+
+.plane-line span {
+  flex: 1;
+  height: 2px;
+  background: #cbd5e1;
+}
+
+.plane-line div {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2563eb, #38bdf8);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flight-info {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.flight-info div {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 16px;
+}
+
+.flight-info span {
+  display: block;
+  color: #64748b;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.flight-info strong {
+  font-size: 17px;
+}
+
+/* SECCIONES */
+
+.info-section,
+.destinos-section,
+.offers-section {
+  padding: 70px 56px;
+}
+
+.section-header {
+  max-width: 780px;
+  margin-bottom: 34px;
+}
+
+.section-header span,
+.section-title span,
+.offer-card span {
+  color: #2563eb;
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+
+.section-header h2,
+.section-title h2,
+.offer-card h2 {
+  font-size: 38px;
+  margin: 10px 0;
+  color: #0f172a;
+}
+
+.section-header p,
+.section-title p,
+.offer-card p {
+  color: #64748b;
+  line-height: 1.7;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.info-card {
+  background: white;
+  border-radius: 24px;
+  padding: 30px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+  border: 1px solid #e2e8f0;
+  transition: 0.25s ease;
+}
+
+.info-card:hover {
+  transform: translateY(-6px);
+}
+
+.info-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  background: #dbeafe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  margin-bottom: 18px;
+}
+
+.info-card h3 {
+  margin: 0 0 10px;
+  font-size: 22px;
+}
+
+.info-card p {
+  margin: 0;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+/* DESTINOS */
+
+.destinos-section {
+  background: #eef3f8;
+}
+
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  align-items: end;
+  margin-bottom: 30px;
+}
+
+.section-title p {
+  max-width: 480px;
+}
+
+.destinos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 26px;
+}
+
+.destino-card {
+  min-height: 340px;
+  border-radius: 28px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  padding: 28px;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.15);
+  transition: all 0.3s ease;
+}
+
+.destino-card:hover {
+  transform: translateY(-8px);
+}
+
+.destino-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.1));
+}
+
+.destino-content {
+  position: relative;
+  z-index: 1;
+  color: white;
+}
+
+.destino-content span {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 800;
+  background: rgba(255, 255, 255, 0.16);
+  padding: 7px 12px;
+  border-radius: 999px;
+  margin-bottom: 12px;
+}
+
+.destino-content h3 {
+  margin: 0;
+  font-size: 34px;
+}
+
+.destino-content p {
+  margin: 8px 0 0;
+  color: #e2e8f0;
+}
+
+.guatemala {
+  background-image:
+    linear-gradient(to top, rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.1)),
+    url('/assets/img/guatemala.jpg');
+}
+
+.mexico {
+  background-image:
+    linear-gradient(to top, rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.1)),
+    url('/assets/img/mexico.jpg');
+}
+
+.panama {
+  background-image:
+    linear-gradient(to top, rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.1)),
+    url('/assets/img/panama.jpg');
+}
+
+/* OFERTAS */
+
+.offer-card {
+  background: white;
+  border-radius: 30px;
+  padding: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.1);
+  border: 1px solid #e2e8f0;
+}
+
+/* FOOTER */
+
+.footer {
+  padding: 28px 56px;
+  background: #0f172a;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer p {
+  margin: 0;
+  font-weight: 800;
+}
+
+.footer span {
+  color: #93c5fd;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1100px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .info-grid,
+  .destinos-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-title,
+  .offer-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 760px) {
+  .navbar {
+    height: auto;
+    padding: 20px;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .hero,
+  .info-section,
+  .destinos-section,
+  .offers-section {
+    padding: 42px 22px;
+  }
+
+  .hero h1 {
+    font-size: 38px;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+  }
+
+  .flight-route {
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .plane-line {
+    width: 100%;
+    margin: 0;
+  }
+
+  .flight-info {
+    grid-template-columns: 1fr;
+  }
+
+  .footer {
+    padding: 24px;
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+}

@@ -1,0 +1,169 @@
+<div class="page-container">
+
+  <section class="header-card">
+    <span class="badge">Consultas</span>
+    <h1>Reporte de aviones por aerolínea</h1>
+    <p>
+      Consulte los aviones registrados por aerolínea y genere el reporte en PDF o Excel.
+    </p>
+  </section>
+
+  <section class="steps">
+
+    <article class="step active">
+      <div class="step-number">1</div>
+      <div>
+        <h3>Filtros</h3>
+        <p>Seleccione la aerolínea.</p>
+      </div>
+    </article>
+
+    <article class="step" [class.active]="busquedaRealizada">
+      <div class="step-number">2</div>
+      <div>
+        <h3>Consulta</h3>
+        <p>Visualice los aviones encontrados.</p>
+      </div>
+    </article>
+
+    <article class="step" [class.active]="aviones.length > 0">
+      <div class="step-number">3</div>
+      <div>
+        <h3>Exportar</h3>
+        <p>Genere PDF o Excel.</p>
+      </div>
+    </article>
+
+  </section>
+
+  <section class="form-card">
+
+    <div class="card-title">
+      <div>
+        <h2>Filtros de búsqueda</h2>
+        <p>Los datos del reporte se generan según la aerolínea seleccionada.</p>
+      </div>
+    </div>
+
+    <form [formGroup]="formulario" class="form-grid">
+
+      <div class="form-field">
+        <label for="idAerolinea">Aerolínea</label>
+
+        <select id="idAerolinea" formControlName="idAerolinea">
+          <option [ngValue]="null">Seleccione una aerolínea</option>
+          <option
+            *ngFor="let aerolinea of aerolineas"
+            [ngValue]="aerolinea.idAerolinea">
+            {{ aerolinea.nombre }}
+          </option>
+        </select>
+
+        <small *ngIf="campoInvalido('idAerolinea')">
+          Debe seleccionar una aerolínea.
+        </small>
+      </div>
+
+    </form>
+
+    <div class="acciones">
+      <button
+        type="button"
+        class="btn primary"
+        (click)="buscar()"
+        [disabled]="cargando || cargandoCatalogos">
+
+        <span *ngIf="!cargando">Buscar</span>
+        <span *ngIf="cargando">Buscando...</span>
+      </button>
+
+      <button
+        type="button"
+        class="btn secondary"
+        (click)="limpiar()"
+        [disabled]="cargando">
+
+        Limpiar
+      </button>
+
+      <button
+        type="button"
+        class="btn danger"
+        (click)="descargarPdf()"
+        [disabled]="descargandoPdf || aviones.length === 0">
+
+        <span *ngIf="!descargandoPdf">PDF / Imprimir</span>
+        <span *ngIf="descargandoPdf">Generando PDF...</span>
+      </button>
+
+      <button
+        type="button"
+        class="btn success"
+        (click)="descargarExcel()"
+        [disabled]="descargandoExcel || aviones.length === 0">
+
+        <span *ngIf="!descargandoExcel">Excel</span>
+        <span *ngIf="descargandoExcel">Generando Excel...</span>
+      </button>
+
+      <button
+        type="button"
+        class="btn outline"
+        (click)="nuevaConsulta()">
+
+        Nueva consulta
+      </button>
+    </div>
+
+    <div class="mensaje error" *ngIf="mensajeError">
+      {{ mensajeError }}
+    </div>
+
+    <div class="mensaje exito" *ngIf="mensajeExito">
+      {{ mensajeExito }}
+    </div>
+
+  </section>
+
+  <section class="list-card" *ngIf="busquedaRealizada">
+
+    <div class="card-title">
+      <div>
+        <h2>Resultado de la consulta</h2>
+        <p>
+          Aviones encontrados: {{ aviones.length }}
+        </p>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="aviones.length === 0 && !mensajeError">
+      No hay aviones para mostrar.
+    </div>
+
+    <div class="table-wrapper" *ngIf="aviones.length > 0">
+      <table>
+        <thead>
+        <tr>
+          <th>Modelo del avión</th>
+          <th>Marca</th>
+          <th>Año</th>
+          <th>Cantidad de pasajeros</th>
+          <th>Cantidad de vuelos</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr *ngFor="let avion of aviones">
+          <td>{{ avion.modelo }}</td>
+          <td>{{ avion.marca }}</td>
+          <td>{{ avion.anio }}</td>
+          <td>{{ avion.cantidadPasajeros }}</td>
+          <td>{{ avion.cantidadVuelos }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+
+</div>

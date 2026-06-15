@@ -1,0 +1,141 @@
+<div class="page-container">
+
+  <section class="header-card">
+    <span class="badge">REPORTE ADMIN AEROLÍNEA</span>
+    <h1>Boletos reservados por día</h1>
+    <p>Consulta los boletos reservados en una fecha específica y revisa el monto generado por cada boleto.</p>
+  </section>
+
+  <section class="steps">
+    <article class="step active">
+      <div class="step-number">1</div>
+      <div>
+        <h3>Filtro</h3>
+        <p>Seleccione la fecha de consulta.</p>
+      </div>
+    </article>
+
+    <article class="step" [class.active]="busquedaRealizada">
+      <div class="step-number">2</div>
+      <div>
+        <h3>Consulta</h3>
+        <p>Revise los boletos encontrados.</p>
+      </div>
+    </article>
+
+    <article class="step" [class.active]="boletos.length > 0">
+      <div class="step-number">3</div>
+      <div>
+        <h3>Exportar</h3>
+        <p>Genere PDF o Excel.</p>
+      </div>
+    </article>
+  </section>
+
+  <section class="form-card">
+    <form [formGroup]="formulario" (ngSubmit)="buscar()">
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="fecha">Fecha</label>
+          <input
+            id="fecha"
+            type="date"
+            formControlName="fecha">
+
+          <small class="field-error" *ngIf="campoInvalido('fecha')">
+            Debe ingresar la fecha de consulta.
+          </small>
+        </div>
+      </div>
+
+      <div class="acciones">
+        <button type="submit" class="btn-primary" [disabled]="cargando">
+          {{ cargando ? 'Buscando...' : 'Buscar' }}
+        </button>
+
+        <button type="button" class="btn-secondary" (click)="limpiar()" [disabled]="cargando">
+          Limpiar
+        </button>
+
+        <button
+          type="button"
+          class="btn-print"
+          (click)="descargarPdf()"
+          [disabled]="descargandoPdf || boletos.length === 0">
+          {{ descargandoPdf ? 'Generando PDF...' : 'PDF / Imprimir' }}
+        </button>
+
+        <button
+          type="button"
+          class="btn-excel"
+          (click)="descargarExcel()"
+          [disabled]="descargandoExcel || boletos.length === 0">
+          {{ descargandoExcel ? 'Generando Excel...' : 'Excel' }}
+        </button>
+
+        <button type="button" class="btn-light" (click)="nuevaConsulta()">
+          Nueva consulta
+        </button>
+      </div>
+
+    </form>
+  </section>
+
+  <div class="mensaje error" *ngIf="mensajeError">
+    {{ mensajeError }}
+  </div>
+
+  <div class="mensaje exito" *ngIf="mensajeExito">
+    {{ mensajeExito }}
+  </div>
+
+  <section class="summary-grid" *ngIf="boletos.length > 0">
+    <article class="summary-card">
+      <span>Total boletos</span>
+      <strong>{{ obtenerTotalBoletos() }}</strong>
+    </article>
+
+    <article class="summary-card">
+      <span>Monto total del día</span>
+      <strong>{{ obtenerMontoTotal() | currency:'GTQ':'symbol':'1.2-2' }}</strong>
+    </article>
+  </section>
+
+  <section class="list-card" *ngIf="boletos.length > 0">
+    <div class="list-header">
+      <div>
+        <h2>Boletos reservados</h2>
+        <p>Datos generados según la fecha consultada.</p>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>No. boleto</th>
+          <th>Monto</th>
+          <th>Fecha de reserva</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr *ngFor="let item of boletos">
+          <td>{{ item.idBoleto }}</td>
+          <td>{{ item.numeroBoleto }}</td>
+          <td>{{ item.monto | currency:'GTQ':'symbol':'1.2-2' }}</td>
+          <td>{{ item.fechaReserva | date:'dd/MM/yyyy HH:mm' }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="empty-card" *ngIf="busquedaRealizada && boletos.length === 0 && !mensajeError">
+    <h3>No hay datos para mostrar</h3>
+    <p>No se encontraron boletos reservados para la fecha seleccionada.</p>
+  </section>
+
+</div>

@@ -1,0 +1,135 @@
+<div class="tripulacion-container">
+
+  <div class="header-card">
+    <div>
+      <span class="badge">Aerolínea</span>
+      <h1>Crear Tripulación</h1>
+      <p>Forma equipos de vuelo seleccionando piloto, copiloto, ingeniero de vuelo y tripulantes de cabina.</p>
+    </div>
+  </div>
+
+  <div class="form-card">
+
+    <div class="mensaje error" *ngIf="error">
+      {{ error }}
+    </div>
+
+    <div class="mensaje exito" *ngIf="mensaje">
+      {{ mensaje }}
+    </div>
+
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>Aerolínea</label>
+        <select [(ngModel)]="idAerolinea" (change)="cargarTripulantes()">
+          <option [ngValue]="null">Seleccione una aerolínea</option>
+          <option *ngFor="let aerolinea of aerolineas" [ngValue]="aerolinea.idAerolinea">
+            {{ aerolinea.nombre }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Nombre del equipo</label>
+        <input
+          type="text"
+          [(ngModel)]="nombreEquipo"
+          placeholder="Ejemplo: Equipo Boeing 737">
+      </div>
+
+      <div class="form-group">
+        <label>Piloto</label>
+        <select [(ngModel)]="idPiloto">
+          <option [ngValue]="null">Seleccione</option>
+          <option *ngFor="let piloto of pilotos" [ngValue]="piloto.idTripulante">
+            {{ piloto.nombreCompleto }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Copiloto</label>
+        <select [(ngModel)]="idCopiloto">
+          <option [ngValue]="null">Seleccione</option>
+          <option *ngFor="let copiloto of copilotos" [ngValue]="copiloto.idTripulante">
+            {{ copiloto.nombreCompleto }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Ingeniero de vuelo</label>
+        <select [(ngModel)]="idIngenieroVuelo">
+          <option [ngValue]="null">Seleccione</option>
+          <option *ngFor="let ingeniero of ingenieros" [ngValue]="ingeniero.idTripulante">
+            {{ ingeniero.nombreCompleto }}
+          </option>
+        </select>
+      </div>
+
+    </div>
+
+    <div class="cabina-section">
+      <div class="cabina-header">
+        <label>Tripulantes de cabina</label>
+        <span>{{ idTripulantesCabina.length }}/3 seleccionados</span>
+      </div>
+
+      <div class="cabina-lista">
+        <label class="cabina-item" *ngFor="let tripulante of cabina">
+          <input
+            type="checkbox"
+            [checked]="idTripulantesCabina.includes(tripulante.idTripulante)"
+            (change)="toggleCabina(tripulante.idTripulante, $any($event.target).checked)">
+          <span>{{ tripulante.nombreCompleto }}</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="acciones">
+      <button type="button" class="btn-secundario" (click)="limpiarFormulario()">
+        Limpiar
+      </button>
+
+      <button type="button" class="btn-principal" [disabled]="cargando" (click)="guardar()">
+        {{ cargando ? 'Guardando...' : 'Guardar' }}
+      </button>
+    </div>
+
+  </div>
+
+  <div class="list-card" *ngIf="tripulaciones.length > 0">
+
+    <div class="list-header">
+      <h2>Tripulaciones registradas</h2>
+      <span>{{ tripulaciones.length }} registros</span>
+    </div>
+
+    <table>
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Equipo</th>
+        <th>Aerolínea</th>
+        <th>Estado</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr *ngFor="let item of tripulaciones">
+        <td>{{ item.idTripulacion }}</td>
+        <td>{{ item.nombreEquipo }}</td>
+        <td>{{ item.nombreAerolinea }}</td>
+        <td>
+          <span class="estado">
+            {{ item.estado || 'Activo' }}
+          </span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+</div>

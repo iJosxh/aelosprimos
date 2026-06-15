@@ -1,0 +1,96 @@
+<div class="aeropuerto-container">
+
+  <div class="header-card">
+    <div>
+      <span class="badge">Administración</span>
+      <h1>Registrar Aeropuerto</h1>
+      <p>Registra los aeropuertos disponibles para operar dentro del sistema.</p>
+    </div>
+  </div>
+
+  <div class="form-card">
+
+    <div class="mensaje error" *ngIf="mensajeError">
+      {{ mensajeError }}
+    </div>
+
+    <div class="mensaje exito" *ngIf="mensajeExito">
+      {{ mensajeExito }}
+    </div>
+
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>Nombre del aeropuerto</label>
+        <input
+          type="text"
+          [(ngModel)]="aeropuerto.nombre"
+          placeholder="Ejemplo: Aeropuerto Internacional La Aurora">
+      </div>
+
+      <div class="form-group">
+        <label>Ciudad</label>
+        <input
+          type="text"
+          [(ngModel)]="aeropuerto.ciudad"
+          placeholder="Ejemplo: Ciudad de Guatemala">
+      </div>
+
+      <div class="form-group">
+        <label>País</label>
+        <input
+          type="text"
+          [(ngModel)]="aeropuerto.pais"
+          placeholder="Ejemplo: Guatemala">
+      </div>
+
+    </div>
+
+    <div class="acciones">
+      <button type="button" class="btn-secundario" (click)="limpiarFormulario()">
+        Limpiar
+      </button>
+
+      <button type="button" class="btn-principal" (click)="guardar()">
+        Guardar
+      </button>
+    </div>
+
+  </div>
+
+  <div class="list-card" *ngIf="aeropuertos.length > 0">
+
+    <div class="list-header">
+      <h2>Aeropuertos registrados</h2>
+      <span>{{ aeropuertos.length }} registros</span>
+    </div>
+
+    <table>
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Ciudad</th>
+        <th>País</th>
+        <th>Estado</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr *ngFor="let item of aeropuertos">
+        <td>{{ item.idAeropuerto }}</td>
+        <td>{{ item.nombre }}</td>
+        <td>{{ item.ciudad }}</td>
+        <td>{{ item.pais }}</td>
+        <td>
+            <span class="estado">
+              {{ item.estado || item.codigoEstado || 'Activo' }}
+            </span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+</div>

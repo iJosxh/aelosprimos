@@ -1,0 +1,118 @@
+<div class="autorizacion-container">
+
+  <div class="header-card">
+    <div>
+      <span class="badge">Administración</span>
+      <h1>Autorizar Aeropuertos</h1>
+      <p>Asigna los aeropuertos permitidos para operar por cada aerolínea.</p>
+    </div>
+  </div>
+
+  <div class="form-card">
+
+    <div class="mensaje error" *ngIf="mensajeError">
+      {{ mensajeError }}
+    </div>
+
+    <div class="mensaje exito" *ngIf="mensajeExito">
+      {{ mensajeExito }}
+    </div>
+
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>Aerolínea</label>
+        <select
+          [(ngModel)]="idAerolineaSeleccionada"
+          (change)="cargarAutorizacionesPorAerolinea()">
+          <option [ngValue]="0">Seleccione una aerolínea</option>
+          <option *ngFor="let aerolinea of aerolineas" [ngValue]="aerolinea.idAerolinea">
+            {{ aerolinea.nombre }}
+          </option>
+        </select>
+      </div>
+
+    </div>
+
+    <div class="airport-section">
+
+      <div class="section-title">
+        <h2>Aeropuertos disponibles</h2>
+        <span>{{ idsAeropuertosSeleccionados.length }} seleccionados</span>
+      </div>
+
+      <div class="airport-grid" *ngIf="aeropuertos.length > 0; else sinAeropuertos">
+
+        <label
+          class="airport-card"
+          *ngFor="let aeropuerto of aeropuertos"
+          [class.selected]="estaSeleccionado(aeropuerto.idAeropuerto)">
+
+          <input
+            type="checkbox"
+            [checked]="estaSeleccionado(aeropuerto.idAeropuerto)"
+            (change)="toggleAeropuerto(aeropuerto.idAeropuerto, $event)">
+
+          <div>
+            <strong>{{ aeropuerto.nombre }}</strong>
+            <p>{{ aeropuerto.ciudad }}, {{ aeropuerto.pais }}</p>
+          </div>
+
+        </label>
+
+      </div>
+
+      <ng-template #sinAeropuertos>
+        <p class="empty-text">No hay aeropuertos activos disponibles.</p>
+      </ng-template>
+
+    </div>
+
+    <div class="acciones">
+      <button type="button" class="btn-secundario" (click)="limpiar()">
+        Limpiar
+      </button>
+
+      <button type="button" class="btn-principal" (click)="guardar()">
+        Guardar autorizaciones
+      </button>
+    </div>
+
+  </div>
+
+  <div class="list-card" *ngIf="autorizaciones.length > 0">
+
+    <div class="list-header">
+      <h2>Aeropuertos autorizados</h2>
+      <span>{{ autorizaciones.length }} registros</span>
+    </div>
+
+    <table>
+      <thead>
+      <tr>
+        <th>Aerolínea</th>
+        <th>Aeropuerto</th>
+        <th>Ciudad</th>
+        <th>País</th>
+        <th>Estado</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr *ngFor="let item of autorizaciones">
+        <td>{{ item.nombreAerolinea }}</td>
+        <td>{{ item.nombreAeropuerto }}</td>
+        <td>{{ item.ciudad }}</td>
+        <td>{{ item.pais }}</td>
+        <td>
+            <span class="estado">
+              {{ item.estado || item.codigoEstado || 'Activo' }}
+            </span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+</div>

@@ -1,0 +1,239 @@
+<div class="consulta-publica-page">
+
+  <header class="public-navbar">
+    <div class="brand" routerLink="/">
+      <div class="brand-icon">ALP</div>
+      <div>
+        <strong>Aeropuerto Los Primos</strong>
+        <span>Portal público</span>
+      </div>
+    </div>
+
+    <nav>
+      <a routerLink="/">Inicio</a>
+      <a routerLink="/registro">Registrarse</a>
+      <a routerLink="/login">Iniciar sesión</a>
+    </nav>
+  </header>
+
+  <main class="consulta-main">
+
+    <section class="hero-consulta">
+      <div>
+        <span class="badge">Consulta pública</span>
+        <h1>Consulta de vuelo</h1>
+        <p>
+          Verifica la información de un vuelo ingresando su número.
+          Puedes descargar el resultado en PDF o Excel.
+        </p>
+      </div>
+
+      <div class="hero-card">
+        <span>✈</span>
+        <strong>Información actualizada</strong>
+        <small>Consulta disponible sin iniciar sesión</small>
+      </div>
+    </section>
+
+    <section class="form-card">
+
+      <div class="steps">
+
+        <div class="step" [class.active]="pasoActual === 1">
+          <span>1</span>
+          <div>
+            <strong>Buscar</strong>
+            <small>Número de vuelo</small>
+          </div>
+        </div>
+
+        <div class="step-line"></div>
+
+        <div class="step" [class.active]="pasoActual === 2">
+          <span>2</span>
+          <div>
+            <strong>Consultar</strong>
+            <small>Detalle encontrado</small>
+          </div>
+        </div>
+
+        <div class="step-line"></div>
+
+        <div class="step" [class.active]="pasoActual === 3">
+          <span>3</span>
+          <div>
+            <strong>Exportar</strong>
+            <small>PDF o Excel</small>
+          </div>
+        </div>
+
+      </div>
+
+      <div *ngIf="mensajeError" class="mensaje error">
+        {{ mensajeError }}
+      </div>
+
+      <div *ngIf="mensajeExito" class="mensaje exito">
+        {{ mensajeExito }}
+      </div>
+
+      <form [formGroup]="formConsulta" (ngSubmit)="buscarVuelo()">
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label>Número de vuelo</label>
+
+            <input
+              type="text"
+              formControlName="numeroVuelo"
+              placeholder="Ejemplo: VU-1470">
+
+            <small class="field-warning" *ngIf="campoInvalido('numeroVuelo')">
+              Debe ingresar el número de vuelo.
+            </small>
+          </div>
+
+        </div>
+
+        <div class="acciones">
+          <button
+            type="button"
+            class="btn-secundario"
+            (click)="limpiarFiltros()"
+            [disabled]="buscando || descargandoPdf || descargandoExcel">
+
+            Limpiar
+          </button>
+
+          <button
+            type="submit"
+            class="btn-principal"
+            [disabled]="buscando || descargandoPdf || descargandoExcel">
+
+            {{ buscando ? 'Buscando...' : 'Buscar vuelo' }}
+          </button>
+        </div>
+
+      </form>
+
+    </section>
+
+    <section class="list-card" *ngIf="vueloConsultado">
+
+      <div class="list-header">
+        <div>
+          <h2>Detalle del vuelo</h2>
+          <p>
+            Información encontrada para el vuelo
+            <strong>{{ vueloConsultado.codigoVuelo }}</strong>.
+          </p>
+        </div>
+
+        <span class="estado-chip">
+          {{ vueloConsultado.estado }}
+        </span>
+      </div>
+
+      <div class="ticket-card">
+
+        <div class="ticket-top">
+
+          <div>
+            <small>Número de vuelo</small>
+            <h3>{{ vueloConsultado.codigoVuelo }}</h3>
+          </div>
+
+          <div class="flight-icon">
+            ✈
+          </div>
+
+          <div>
+            <small>Aerolínea</small>
+            <h3>{{ vueloConsultado.aerolinea }}</h3>
+          </div>
+
+        </div>
+
+        <div class="route-grid">
+
+          <div class="route-card">
+            <small>Origen</small>
+            <strong>{{ vueloConsultado.origen }}</strong>
+            <p>{{ vueloConsultado.ciudadOrigen }}, {{ vueloConsultado.paisOrigen }}</p>
+          </div>
+
+          <div class="route-line">
+            <span></span>
+            <div>Vuelo</div>
+            <span></span>
+          </div>
+
+          <div class="route-card">
+            <small>Destino</small>
+            <strong>{{ vueloConsultado.destino }}</strong>
+            <p>{{ vueloConsultado.ciudadDestino }}, {{ vueloConsultado.paisDestino }}</p>
+          </div>
+
+        </div>
+
+        <div class="detalle-grid">
+
+          <div>
+            <small>Modelo del avión</small>
+            <strong>{{ vueloConsultado.modeloAvion }}</strong>
+          </div>
+
+          <div>
+            <small>Marca</small>
+            <strong>{{ vueloConsultado.marcaAvion || 'No registrada' }}</strong>
+          </div>
+
+          <div>
+            <small>Fecha y hora de salida</small>
+            <strong>{{ vueloConsultado.fechaHoraSalida | date:'dd/MM/yyyy HH:mm' }}</strong>
+          </div>
+
+          <div>
+            <small>Fecha y hora de llegada</small>
+            <strong>{{ vueloConsultado.fechaHoraLlegada | date:'dd/MM/yyyy HH:mm' }}</strong>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="acciones">
+        <button
+          type="button"
+          class="btn-secundario"
+          (click)="nuevaConsulta()"
+          [disabled]="buscando || descargandoPdf || descargandoExcel">
+
+          Nueva consulta
+        </button>
+
+        <button
+          type="button"
+          class="btn-excel"
+          (click)="descargarExcel()"
+          [disabled]="descargandoExcel || descargandoPdf || buscando">
+
+          {{ descargandoExcel ? 'Generando Excel...' : 'Excel' }}
+        </button>
+
+        <button
+          type="button"
+          class="btn-principal"
+          (click)="descargarPdf()"
+          [disabled]="descargandoPdf || descargandoExcel || buscando">
+
+          {{ descargandoPdf ? 'Generando PDF...' : 'Imprimir PDF' }}
+        </button>
+      </div>
+
+    </section>
+
+  </main>
+
+</div>

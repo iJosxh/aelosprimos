@@ -1,0 +1,29 @@
+@use '@angular/material' as mat;
+
+// Incluir core
+@include mat.core();
+
+// Crear el tema
+$my-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$azure-palette,
+    tertiary: mat.$blue-palette,
+  )
+));
+
+// Aplicar el tema
+html {
+  @include mat.all-component-themes($my-theme);
+}
+
+body {
+  color-scheme: light;
+
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+
+  margin: 0;
+  height: 100%;
+}

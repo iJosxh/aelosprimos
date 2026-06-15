@@ -1,0 +1,182 @@
+<div class="page-container">
+
+  <section class="header-card">
+    <span class="badge">Consultas</span>
+
+    <h1>Destinos autorizados por aerolínea</h1>
+
+    <p>
+      Consulte los aeropuertos autorizados para una aerolínea y genere el resultado en PDF o Excel.
+    </p>
+  </section>
+
+  <section class="steps">
+
+    <article class="step active">
+      <div class="step-number">1</div>
+      <div>
+        <h3>Filtros</h3>
+        <p>Seleccione la aerolínea.</p>
+      </div>
+    </article>
+
+    <article class="step" [class.active]="busquedaRealizada">
+      <div class="step-number">2</div>
+      <div>
+        <h3>Consulta</h3>
+        <p>Visualice los destinos autorizados.</p>
+      </div>
+    </article>
+
+    <article class="step" [class.active]="destinos.length > 0">
+      <div class="step-number">3</div>
+      <div>
+        <h3>Exportar</h3>
+        <p>Genere PDF o Excel.</p>
+      </div>
+    </article>
+
+  </section>
+
+  <section class="form-card">
+
+    <div class="section-title">
+      <div>
+        <h2>Parámetros de búsqueda</h2>
+        <p>La aerolínea es obligatoria para realizar la consulta.</p>
+      </div>
+    </div>
+
+    <div *ngIf="mensajeError" class="mensaje error">
+      {{ mensajeError }}
+    </div>
+
+    <div *ngIf="mensajeExito" class="mensaje exito">
+      {{ mensajeExito }}
+    </div>
+
+    <form [formGroup]="formFiltros" (ngSubmit)="buscar()">
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Aerolínea</label>
+
+          <select formControlName="idAerolinea">
+            <option value="">Seleccione una aerolínea</option>
+
+            <option
+              *ngFor="let aerolinea of aerolineas"
+              [value]="aerolinea.idAerolinea">
+
+              {{ aerolinea.nombre }}
+            </option>
+          </select>
+
+          <small class="field-warning" *ngIf="campoInvalido('idAerolinea')">
+            Debe ingresar los campos obligatorios
+          </small>
+        </div>
+
+      </div>
+
+      <div class="acciones">
+
+        <button
+          type="button"
+          class="btn-secundario"
+          (click)="limpiar()"
+          [disabled]="buscando || descargandoPdf || descargandoExcel">
+
+          Limpiar
+        </button>
+
+        <button
+          type="submit"
+          class="btn-principal"
+          [disabled]="buscando || cargandoCatalogos || descargandoPdf || descargandoExcel">
+
+          {{ buscando ? 'Buscando...' : 'Buscar' }}
+        </button>
+
+      </div>
+
+    </form>
+
+  </section>
+
+  <section class="list-card" *ngIf="busquedaRealizada && destinos.length > 0">
+
+    <div class="list-header">
+      <div>
+        <h2>Destinos autorizados encontrados</h2>
+
+        <p>
+          Aerolínea:
+          <strong>{{ obtenerNombreAerolineaSeleccionada() }}</strong>
+        </p>
+      </div>
+
+      <span class="counter-chip">
+        {{ destinos.length }} destino(s)
+      </span>
+    </div>
+
+    <div class="table-wrapper">
+
+      <table>
+        <thead>
+        <tr>
+          <th>No.</th>
+          <th>Nombre Aeropuerto</th>
+          <th>País del aeropuerto</th>
+          <th>Ciudad del aeropuerto</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr *ngFor="let destino of destinos; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ destino.nombreAeropuerto }}</td>
+          <td>{{ destino.paisAeropuerto }}</td>
+          <td>{{ destino.ciudadAeropuerto }}</td>
+        </tr>
+        </tbody>
+      </table>
+
+    </div>
+
+    <div class="acciones">
+
+      <button
+        type="button"
+        class="btn-secundario"
+        (click)="nuevaConsulta()"
+        [disabled]="buscando || descargandoPdf || descargandoExcel">
+
+        Nueva consulta
+      </button>
+
+      <button
+        type="button"
+        class="btn-excel"
+        (click)="descargarExcel()"
+        [disabled]="buscando || descargandoPdf || descargandoExcel">
+
+        {{ descargandoExcel ? 'Generando Excel...' : 'Excel' }}
+      </button>
+
+      <button
+        type="button"
+        class="btn-principal"
+        (click)="descargarPdf()"
+        [disabled]="buscando || descargandoPdf || descargandoExcel">
+
+        {{ descargandoPdf ? 'Generando PDF...' : 'PDF / Imprimir' }}
+      </button>
+
+    </div>
+
+  </section>
+
+</div>

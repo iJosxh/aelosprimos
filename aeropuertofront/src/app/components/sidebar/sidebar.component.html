@@ -1,0 +1,222 @@
+<div class="sidebar">
+
+  <div class="brand">
+    <div class="brand-icon">✈</div>
+    <div>
+      <h2>Aeropuerto</h2>
+      <span>Los Primos</span>
+    </div>
+  </div>
+
+  <ul class="menu">
+
+    <li
+      class="menu-item"
+      [routerLink]="['/dashboard']"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }">
+
+      <span class="icon">🏠</span>
+      <span>Dashboard</span>
+    </li>
+
+    <li
+      class="menu-item"
+      *ngIf="rol === 'ADMIN'"
+      [routerLink]="['/dashboard/admin/registrar-tripulante']"
+      routerLinkActive="active">
+
+      <span class="icon">🧑‍✈️</span>
+      <span>Registrar Tripulante</span>
+    </li>
+
+    <li
+      class="menu-item"
+      *ngIf="rol === 'ADMIN'"
+      [routerLink]="['/dashboard/admin/registrar-aerolinea']"
+      routerLinkActive="active">
+
+      <span class="icon">🏢️</span>
+      <span>Registrar Aerolínea</span>
+    </li>
+
+    <li
+      class="menu-item"
+      *ngIf="rol === 'ADMIN'"
+      [routerLink]="['/dashboard/admin/registrar-usuario']"
+      routerLinkActive="active">
+
+      <span class="icon">👤️</span>
+      <span>Registrar Usuario</span>
+    </li>
+
+    <li
+      class="menu-item"
+      *ngIf="rol === 'ADMIN'"
+      [routerLink]="['/dashboard/admin/registrar-avion']"
+      routerLinkActive="active">
+
+      <span class="icon">🛩️️</span>
+      <span>Registrar Avión</span>
+    </li>
+
+    <li
+      class="menu-item"
+      *ngIf="rol === 'ADMIN'"
+      [routerLink]="['/dashboard/admin/registrar-aeropuerto']"
+      routerLinkActive="active">
+
+      <span class="icon">🛬️</span>
+      <span>Registrar Aeropuerto</span>
+    </li>
+
+    <li
+      class="menu-item"
+      *ngIf="rol === 'ADMIN'"
+      [routerLink]="['/dashboard/admin/autorizar-aeropuerto']"
+      routerLinkActive="active">
+
+      <span class="icon">🗺️</span>
+      <span>Autorizar Aeropuertos</span>
+    </li>
+
+    <li
+      class="menu-item"
+      *ngIf="rol === 'ADMIN_AEROLINEA'"
+      (click)="toggleMenuAerolinea()">
+
+      <span class="icon">🛫</span>
+      <span>Aerolínea</span>
+
+      <span
+        class="arrow"
+        [class.rotate]="mostrarMenuAerolinea">
+        ▼
+      </span>
+    </li>
+
+    <ul class="submenu" *ngIf="mostrarMenuAerolinea && rol === 'ADMIN_AEROLINEA'">
+      <li>
+        <a
+          [routerLink]="['/dashboard/adminaerolinea/registrar-tripulacion']"
+          routerLinkActive="active-submenu">
+          Crear Tripulación
+        </a>
+      </li>
+      <li>
+        <a
+          [routerLink]="['/dashboard/adminaerolinea/crear-vuelo']"
+          routerLinkActive="active-submenu">
+          Agregar Vuelo
+        </a>
+      </li>
+    </ul>
+
+    <li
+      class="menu-item"
+      *ngIf="rol === 'ADMIN_AEROLINEA'"
+      (click)="toggleMenuConsultas()">
+
+      <span class="icon">🔎</span>
+      <span>Consultas</span>
+
+      <span
+        class="arrow"
+        [class.rotate]="mostrarMenuConsultas">
+    ▼
+  </span>
+    </li>
+
+    <ul class="submenu" *ngIf="mostrarMenuConsultas && rol === 'ADMIN_AEROLINEA'">
+
+      <li>
+        <a
+          [routerLink]="['/dashboard/adminaerolinea/reporte-listado-vuelos']"
+          routerLinkActive="active-submenu">
+          Reporte de Vuelos
+        </a>
+      </li>
+
+      <li>
+        <a
+          [routerLink]="['/dashboard/adminaerolinea/reporte-aerolineas-aeropuerto']"
+          routerLinkActive="active-submenu">
+          Consultar Aerolíneas
+        </a>
+      </li>
+
+      <li>
+        <a
+          [routerLink]="['/dashboard/adminaerolinea/reporte-aviones-aerolinea']"
+          routerLinkActive="active-submenu">
+          Consultar Aviones
+        </a>
+      </li>
+
+      <li>
+        <a
+          [routerLink]="['/dashboard/adminaerolinea/reporte-destinos-autorizados']"
+          routerLinkActive="active-submenu">
+          Consultar Destinos
+        </a>
+      </li>
+
+      <li>
+        <a
+          [routerLink]="['/dashboard/adminaerolinea/reporte-pasajeros-vuelo']"
+          routerLinkActive="active-submenu">
+          Consultar Pasajeros Por Vuelo
+        </a>
+      </li>
+
+      <li>
+        <a
+          [routerLink]="['/dashboard/adminaerolinea/reporte-equipaje-vuelo']"
+          routerLinkActive="active-submenu">
+          Consultar Equipaje Por Vuelo
+        </a>
+      </li>
+
+      <li>
+        <a
+          [routerLink]="['/dashboard/adminaerolinea/reporte-boletos-reservados-dia']"
+          routerLinkActive="active-submenu">
+          Boletos por día
+        </a>
+      </li>
+
+    </ul>
+
+    <li
+      class="menu-item"
+      *ngIf="rol === 'ADMIN_ABORDAJE'"
+      [routerLink]="['/dashboard/adminabordaje/abordaje']"
+      routerLinkActive="active">
+
+      <span class="icon">🛩️️</span>
+      <span>Abordaje</span>
+    </li>
+
+    <li class="menu-item" *ngIf="rol === 'PAS'">
+      <span class="icon">🎫</span>
+      <span>Mis vuelos</span>
+    </li>
+
+    <li
+      class="menu-item"
+      *ngIf="rol === 'PAS'"
+      [routerLink]="['/dashboard/pasajero/reservar-vuelo']"
+      routerLinkActive="active">
+
+      <span class="icon">🧳</span>
+      <span>Reservar Vuelo</span>
+    </li>
+
+  </ul>
+
+  <div class="sidebar-footer">
+    <p>Sistema aeroportuario</p>
+    <small>v1.0</small>
+  </div>
+
+</div>

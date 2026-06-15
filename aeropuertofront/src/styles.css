@@ -1,0 +1,85 @@
+.mat-mdc-snack-bar-container.snackbar-error .mdc-snackbar__surface {
+  background: #ffffff !important;
+  color: #d32f2f !important;
+  border-left: 6px solid #d32f2f;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.mat-mdc-snack-bar-container.snackbar-success .mdc-snackbar__surface {
+  background: #ffffff !important;
+  color: #2e7d32 !important;
+  border-left: 6px solid #2e7d32;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.mat-mdc-snack-bar-container.snackbar-warning .mdc-snackbar__surface {
+  background: #ffffff !important;
+  color: #ed6c02 !important;
+  border-left: 6px solid #ed6c02;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.snackbar-error .mdc-snackbar__label::before {
+  content: "❌";
+  color: #d32f2f;
+  margin-right: 8px;
+}
+
+.snackbar-success .mdc-snackbar__label::before {
+  content: "✅";
+  color: #2e7d32;
+  margin-right: 8px;
+}
+
+.snackbar-warning .mdc-snackbar__label::before {
+  content: "⚠️";
+  color: #ed6c02;
+  margin-right: 8px;
+}
+
+.mdc-snackbar__surface {
+  padding: 14px 18px !important;
+  border-radius: 12px !important;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25) !important;
+}
+
+.mat-mdc-snack-bar-container {
+  animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+  }
+}
+
+input.ng-invalid.ng-touched {
+  border: 1px solid #d32f2f;
+  box-shadow: 0 0 4px rgba(211, 47, 47, 0.4);
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  50% { transform: translateX(3px); }
+  75% { transform: translateX(-3px); }
+  100% { transform: translateX(0); }
+}
+
+.form-error {
+  animation: shake 0.3s;
+}

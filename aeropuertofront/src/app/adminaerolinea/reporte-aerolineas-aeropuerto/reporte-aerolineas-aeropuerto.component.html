@@ -1,0 +1,171 @@
+<div class="page-container">
+
+  <section class="header-card">
+    <span class="badge">Consultas</span>
+    <h1>Consulta de Aerolineas</h1>
+    <p>
+      Consulta las aerolíneas asociadas a un aeropuerto, junto con su cantidad de aviones
+      y destinos autorizados.
+    </p>
+  </section>
+
+  <section class="steps">
+
+    <div class="step active">
+      <span>1</span>
+      <div>
+        <h3>Filtros</h3>
+        <p>Seleccione el aeropuerto.</p>
+      </div>
+    </div>
+
+    <div class="step" [class.active]="consultaRealizada">
+      <span>2</span>
+      <div>
+        <h3>Consulta</h3>
+        <p>Visualice las aerolíneas encontradas.</p>
+      </div>
+    </div>
+
+    <div class="step" [class.active]="resultados.length > 0">
+      <span>3</span>
+      <div>
+        <h3>Exportar</h3>
+        <p>Genere PDF o Excel.</p>
+      </div>
+    </div>
+
+  </section>
+
+  <section class="form-card">
+    <div class="card-title">
+      <div>
+        <h2>Parámetros de consulta</h2>
+        <p>Seleccione el aeropuerto para generar el reporte.</p>
+      </div>
+    </div>
+
+    <form [formGroup]="formulario" class="form-grid">
+
+      <div class="form-field">
+        <label for="idAeropuerto">Aeropuerto <span>*</span></label>
+
+        <select id="idAeropuerto" formControlName="idAeropuerto">
+          <option [ngValue]="null">Seleccione un aeropuerto</option>
+          <option
+            *ngFor="let aeropuerto of aeropuertos"
+            [ngValue]="aeropuerto.idAeropuerto">
+            {{ aeropuerto.nombre }} - {{ aeropuerto.ciudad }}, {{ aeropuerto.pais }}
+          </option>
+        </select>
+
+        <small class="error-text" *ngIf="campoInvalido('idAeropuerto')">
+          Debe seleccionar un aeropuerto.
+        </small>
+      </div>
+
+    </form>
+
+    <div class="acciones">
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="buscar()"
+        [disabled]="cargandoBusqueda || cargandoCatalogos">
+
+        {{ cargandoBusqueda ? 'Buscando...' : 'Buscar' }}
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="limpiar()"
+        [disabled]="cargandoBusqueda">
+        Limpiar
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-outline"
+        (click)="descargarPdf()"
+        [disabled]="!puedeDescargar() || descargandoPdf">
+
+        {{ descargandoPdf ? 'Generando PDF...' : 'PDF / Imprimir' }}
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-outline"
+        (click)="descargarExcel()"
+        [disabled]="!puedeDescargar() || descargandoExcel">
+
+        {{ descargandoExcel ? 'Generando Excel...' : 'Excel' }}
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-light"
+        (click)="nuevaConsulta()">
+        Nueva consulta
+      </button>
+    </div>
+  </section>
+
+  <div class="mensaje error" *ngIf="mensajeError">
+    {{ mensajeError }}
+  </div>
+
+  <div class="mensaje exito" *ngIf="mensajeExito">
+    {{ mensajeExito }}
+  </div>
+
+  <section class="list-card" *ngIf="consultaRealizada && resultados.length > 0">
+
+    <div class="list-header">
+      <div>
+        <h2>Resultados del reporte</h2>
+        <p *ngIf="aeropuertoSeleccionado">
+          Aeropuerto consultado:
+          <strong>
+            {{ aeropuertoSeleccionado.nombre }} -
+            {{ aeropuertoSeleccionado.ciudad }},
+            {{ aeropuertoSeleccionado.pais }}
+          </strong>
+        </p>
+      </div>
+
+      <span class="contador">
+        {{ resultados.length }} registro(s)
+      </span>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+        <tr>
+          <th>No.</th>
+          <th>Nombre aerolínea</th>
+          <th>Cantidad de aviones</th>
+          <th>Destinos autorizados</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr *ngFor="let item of resultados; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ item.nombreAerolinea }}</td>
+          <td>{{ item.cantidadAviones }}</td>
+          <td>{{ item.destinosAutorizados }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+
+  <section class="empty-card" *ngIf="!consultaRealizada && resultados.length === 0">
+    <h3>Sin consulta realizada</h3>
+    <p>Seleccione un aeropuerto y presione Buscar para mostrar información.</p>
+  </section>
+
+</div>

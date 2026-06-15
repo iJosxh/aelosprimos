@@ -1,0 +1,25 @@
+<div class="navbar">
+
+  <div>
+    <h3>Dashboard</h3>
+    <p>Panel principal del sistema aeroportuario</p>
+  </div>
+
+  <div class="user-section">
+
+    <div class="user-card">
+      <div class="avatar">{{ inicialUsuario }}</div>
+
+      <div>
+        <strong>{{ username }}</strong>
+        <span>Usuario activo</span>
+      </div>
+    </div>
+
+    <button class="logout-btn" (click)="cerrarSesion()">
+      Cerrar sesión
+    </button>
+
+  </div>
+
+</div>

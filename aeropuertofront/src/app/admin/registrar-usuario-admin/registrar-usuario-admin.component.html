@@ -1,0 +1,130 @@
+<div class="usuario-admin-container">
+
+  <div class="header-card">
+    <div>
+      <span class="badge">Administración</span>
+      <h1>Registrar Usuario Administrativo</h1>
+      <p>Crea usuarios internos con rol de Administrador de Aerolínea o Administrador de Abordaje.</p>
+    </div>
+  </div>
+
+  <div class="form-card">
+
+    <div class="mensaje error" *ngIf="mensajeError">
+      {{ mensajeError }}
+    </div>
+
+    <div class="mensaje exito" *ngIf="mensajeExito">
+      {{ mensajeExito }}
+    </div>
+
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>Usuario</label>
+        <input
+          type="text"
+          name="username"
+          [(ngModel)]="usuario.username"
+          placeholder="Ejemplo: adminaerolinea1">
+      </div>
+
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input
+          type="password"
+          name="password"
+          [(ngModel)]="usuario.password"
+          placeholder="Ejemplo: Admin123*">
+      </div>
+
+      <div class="form-group">
+        <label>Rol</label>
+        <select
+          name="idRol"
+          [(ngModel)]="usuario.idRol">
+
+          <option [ngValue]="0">Seleccione un rol</option>
+
+          <option
+            *ngFor="let rol of roles"
+            [ngValue]="rol.id">
+            {{ rol.valor }}
+          </option>
+
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Aerolínea</label>
+        <select
+          name="idAerolinea"
+          [(ngModel)]="usuario.idAerolinea">
+
+          <option [ngValue]="0">Seleccione una aerolínea</option>
+
+          <option
+            *ngFor="let aerolinea of aerolineas"
+            [ngValue]="aerolinea.idAerolinea">
+            {{ aerolinea.nombre }}
+          </option>
+
+        </select>
+      </div>
+
+    </div>
+
+    <div class="acciones">
+      <button
+        type="button"
+        class="btn-secundario"
+        (click)="limpiarFormulario()">
+        Limpiar
+      </button>
+
+      <button
+        type="button"
+        class="btn-principal"
+        (click)="guardar()">
+        Guardar
+      </button>
+    </div>
+
+  </div>
+
+  <div class="list-card" *ngIf="usuarios.length > 0">
+
+    <div class="list-header">
+      <h2>Usuarios administrativos registrados</h2>
+      <span>{{ usuarios.length }} registros</span>
+    </div>
+
+    <table>
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Usuario</th>
+        <th>Rol</th>
+        <th>Aerolínea</th>
+        <th>Estado</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr *ngFor="let item of usuarios">
+        <td>{{ item.idUsuario }}</td>
+        <td>{{ item.username }}</td>
+        <td>{{ item.rol || item.codigoRol }}</td>
+        <td>{{ item.aerolinea || 'N/A' }}</td>
+        <td>
+            <span class="estado">
+              {{ item.estado || item.codigoEstado || 'Activo' }}
+            </span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+</div>

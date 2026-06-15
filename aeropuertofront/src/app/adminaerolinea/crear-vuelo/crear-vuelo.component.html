@@ -1,0 +1,328 @@
+<div class="vuelo-container">
+
+  <section class="header-card">
+    <span class="badge">Aerolínea</span>
+    <h1>Crear Vuelo</h1>
+    <p>
+      Programa vuelos seleccionando aeropuertos, horario, escalas,
+      avión disponible, precios por clase y tripulación asignada.
+    </p>
+  </section>
+
+  <section class="form-card">
+
+    <div class="steps">
+      <div class="step" [class.active]="pasoActual === 1">
+        <span>1</span>
+        <div>
+          <strong>Datos del vuelo</strong>
+          <small>Ruta, horario y escalas</small>
+        </div>
+      </div>
+
+      <div class="step-line"></div>
+
+      <div class="step" [class.active]="pasoActual === 2">
+        <span>2</span>
+        <div>
+          <strong>Asignación</strong>
+          <small>Avión, precios y tripulación</small>
+        </div>
+      </div>
+    </div>
+
+    <form [formGroup]="formVuelo">
+
+      <div *ngIf="mensajeError" class="mensaje error">
+        {{ mensajeError }}
+      </div>
+
+      <div *ngIf="mensajeExito" class="mensaje exito">
+        {{ mensajeExito }}
+      </div>
+
+      <!-- PASO 1 -->
+      <div *ngIf="pasoActual === 1">
+
+        <div class="form-grid">
+
+          <div class="form-group" [class.has-warning]="aerolineaSinAvionesActivos">
+            <label>Aerolínea</label>
+
+            <select formControlName="aerolineaId">
+              <option [ngValue]="null">Seleccione una aerolínea</option>
+              <option *ngFor="let aerolinea of aerolineas" [ngValue]="aerolinea.idAerolinea">
+                {{ aerolinea.nombre }}
+              </option>
+            </select>
+
+            <small class="field-checking" *ngIf="validandoAvionesActivos">
+              Validando aviones activos...
+            </small>
+
+            <small class="field-warning" *ngIf="aerolineaSinAvionesActivos">
+              {{ avisoAvionesActivos }}
+            </small>
+          </div>
+
+          <div class="form-group" [class.has-warning]="aerolineaSinAeropuertosAutorizados">
+            <label>Aeropuerto de salida</label>
+
+            <select formControlName="aeropuertoOrigenId">
+              <option [ngValue]="null">Seleccione aeropuerto de salida</option>
+              <option *ngFor="let aeropuerto of aeropuertos" [ngValue]="aeropuerto.idAeropuerto">
+                {{ aeropuerto.nombre }} - {{ aeropuerto.ciudad }}, {{ aeropuerto.pais }}
+              </option>
+            </select>
+
+            <small class="field-warning" *ngIf="aerolineaSinAeropuertosAutorizados">
+              {{ avisoAeropuertosAutorizados }}
+            </small>
+          </div>
+
+          <div class="form-group" [class.has-warning]="fechaSalidaInvalidaPorTiempo">
+            <label>Fecha y hora de salida</label>
+
+            <input type="datetime-local" formControlName="fechaSalida">
+
+            <small class="field-warning" *ngIf="fechaSalidaInvalidaPorTiempo">
+              {{ avisoFechaSalida }}
+            </small>
+          </div>
+
+          <div class="form-group" [class.has-warning]="aerolineaSinAeropuertosAutorizados">
+            <label>Aeropuerto de llegada</label>
+
+            <select formControlName="aeropuertoDestinoId">
+              <option [ngValue]="null">Seleccione aeropuerto de llegada</option>
+              <option *ngFor="let aeropuerto of aeropuertos" [ngValue]="aeropuerto.idAeropuerto">
+                {{ aeropuerto.nombre }} - {{ aeropuerto.ciudad }}, {{ aeropuerto.pais }}
+              </option>
+            </select>
+
+            <small class="field-warning" *ngIf="aerolineaSinAeropuertosAutorizados">
+              {{ avisoAeropuertosAutorizados }}
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label>Fecha y hora de llegada final</label>
+            <input type="datetime-local" formControlName="fechaLlegada">
+          </div>
+
+        </div>
+
+        <!-- ESCALAS -->
+        <section class="escalas-card">
+          <div class="escalas-header">
+            <div>
+              <h3>Escalas del vuelo</h3>
+              <p>
+                Agregue hasta 2 escalas intermedias. Si el vuelo es directo, deje esta sección vacía.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              class="btn-secundario"
+              (click)="agregarEscala()"
+              [disabled]="escalasFormArray.length >= 2 || cargando">
+              Agregar escala
+            </button>
+          </div>
+
+          <div *ngIf="escalasFormArray.length === 0" class="sin-escalas">
+            Vuelo directo, sin escalas registradas.
+          </div>
+
+          <div formArrayName="escalas" class="escalas-lista">
+
+            <article
+              class="escala-card"
+              *ngFor="let escala of escalasFormArray.controls; let i = index"
+              [formGroupName]="i">
+
+              <div class="escala-title">
+                <div>
+                  <span class="tag">Escala {{ i + 1 }}</span>
+                  <h4>{{ obtenerNombreAeropuerto(escala.get('aeropuertoId')?.value) }}</h4>
+                </div>
+
+                <button type="button" class="btn-danger" (click)="quitarEscala(i)">
+                  Quitar
+                </button>
+              </div>
+
+              <div class="form-grid escala-grid">
+
+                <div class="form-group">
+                  <label>Aeropuerto de escala</label>
+
+                  <select formControlName="aeropuertoId">
+                    <option [ngValue]="null">Seleccione aeropuerto de escala</option>
+                    <option *ngFor="let aeropuerto of aeropuertos" [ngValue]="aeropuerto.idAeropuerto">
+                      {{ aeropuerto.nombre }} - {{ aeropuerto.ciudad }}, {{ aeropuerto.pais }}
+                    </option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label>Orden</label>
+                  <input type="number" formControlName="orden" readonly>
+                </div>
+
+                <div class="form-group">
+                  <label>Fecha y hora de llegada a escala</label>
+                  <input type="datetime-local" formControlName="fechaLlegada">
+                </div>
+
+                <div class="form-group">
+                  <label>Fecha y hora de salida de escala</label>
+                  <input type="datetime-local" formControlName="fechaSalida">
+                </div>
+
+              </div>
+
+            </article>
+
+          </div>
+        </section>
+
+        <div class="acciones">
+          <button type="button" class="btn-secundario" (click)="limpiarFormulario()">
+            Limpiar
+          </button>
+
+          <button
+            type="button"
+            class="btn-principal"
+            (click)="siguientePaso()"
+            [disabled]="
+              cargando ||
+              validandoAvionesActivos ||
+              validandoAeropuertosAutorizados ||
+              aerolineaSinAvionesActivos ||
+              aerolineaSinAeropuertosAutorizados
+            ">
+            {{ cargando ? 'Validando...' : 'Siguiente' }}
+          </button>
+        </div>
+
+      </div>
+
+      <!-- PASO 2 -->
+      <div *ngIf="pasoActual === 2">
+
+        <div class="resumen-card">
+          <h3>Disponibilidad encontrada</h3>
+          <p>
+            Aviones disponibles: <strong>{{ avionesDisponibles.length }}</strong>
+            · Tripulaciones disponibles: <strong>{{ tripulacionesDisponibles.length }}</strong>
+            · Escalas: <strong>{{ escalasFormArray.length }}</strong>
+          </p>
+        </div>
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label>Avión disponible</label>
+            <select formControlName="avionId">
+              <option [ngValue]="null">Seleccione un avión</option>
+              <option *ngFor="let avion of avionesDisponibles" [ngValue]="avion.idAvion">
+                {{ avion.marca }} {{ avion.modelo }} - {{ avion.anio }} - Capacidad: {{ avion.capacidad }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Tripulación disponible</label>
+            <select formControlName="tripulacionId">
+              <option [ngValue]="null">Seleccione una tripulación</option>
+              <option *ngFor="let tripulacion of tripulacionesDisponibles" [ngValue]="tripulacion.idTripulacion">
+                {{ tripulacion.nombreEquipo }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Precio clase económica</label>
+            <input type="number" formControlName="precioEconomica" placeholder="Ejemplo: 120.00">
+          </div>
+
+          <div class="form-group">
+            <label>Precio clase ejecutiva</label>
+            <input type="number" formControlName="precioEjecutiva" placeholder="Ejemplo: 250.00">
+          </div>
+
+        </div>
+
+        <div class="acciones">
+          <button type="button" class="btn-secundario" (click)="volverPasoUno()">
+            Volver
+          </button>
+
+          <button type="button" class="btn-principal" (click)="guardarVuelo()" [disabled]="cargando">
+            {{ cargando ? 'Guardando...' : 'Guardar Vuelo' }}
+          </button>
+        </div>
+
+      </div>
+
+    </form>
+
+  </section>
+
+  <section class="list-card">
+    <div class="list-header">
+      <div>
+        <h2>Vuelos registrados</h2>
+        <p>Listado de vuelos creados en el sistema.</p>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table>
+        <thead>
+        <tr>
+          <th>Código</th>
+          <th>Aerolínea</th>
+          <th>Ruta</th>
+          <th>Origen</th>
+          <th>Destino</th>
+          <th>Escalas</th>
+          <th>Salida</th>
+          <th>Llegada</th>
+          <th>Estado</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr *ngFor="let vuelo of vuelos">
+          <td>{{ vuelo.codigoVuelo }}</td>
+          <td>{{ vuelo.aerolineaNombre }}</td>
+          <td>{{ vuelo.rutaCompleta || (vuelo.aeropuertoOrigen + ' → ' + vuelo.aeropuertoDestino) }}</td>
+          <td>{{ vuelo.aeropuertoOrigen }}</td>
+          <td>{{ vuelo.aeropuertoDestino }}</td>
+          <td>
+            <span class="estado">
+              {{ vuelo.cantidadEscalas === 0 ? 'Directo' : vuelo.cantidadEscalas + ' escala(s)' }}
+            </span>
+          </td>
+          <td>{{ vuelo.fechaSalida | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>{{ vuelo.fechaLlegada | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>
+            <span class="estado">{{ vuelo.estado }}</span>
+          </td>
+        </tr>
+
+        <tr *ngIf="vuelos.length === 0">
+          <td colspan="9" class="empty">
+            No hay vuelos registrados.
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>

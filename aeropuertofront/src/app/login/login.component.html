@@ -1,0 +1,91 @@
+<div class="login-container">
+
+  <!-- PANEL IZQUIERDO -->
+  <div class="left-panel">
+    <div class="overlay">
+
+      <div class="brand">
+        <div class="brand-icon">✈️</div>
+        <div class="brand-text">
+          <h1>AEROPUERTO</h1>
+          <p>Sistema de Gestión</p>
+        </div>
+      </div>
+
+      <div class="features">
+        <div class="feature-item">
+          <span class="feature-check">✔</span>
+          <p>Control de vuelos</p>
+        </div>
+
+        <div class="feature-item">
+          <span class="feature-check">✔</span>
+          <p>Gestión de pasajeros</p>
+        </div>
+
+        <div class="feature-item">
+          <span class="feature-check">✔</span>
+          <p>Reportes en tiempo real</p>
+        </div>
+      </div>
+
+      <div class="footer">
+        © 2026 Aeropuerto
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PANEL DERECHO -->
+  <div class="right-panel">
+    <div class="login-card">
+
+      <div class="login-badge">🛫</div>
+
+      <h2>Iniciar Sesión</h2>
+      <p class="subtitle">Accede al sistema</p>
+
+      <form [formGroup]="form" (ngSubmit)="login()" novalidate>
+
+        <div class="input-group">
+          <label class="field-label">Usuario</label>
+          <div class="input-wrapper">
+            <span class="input-icon">👤</span>
+            <input type="text" formControlName="username" placeholder="Ingresa tu usuario" required>
+          </div>
+          <small *ngIf="form.get('username')?.touched && form.get('username')?.invalid">
+            El usuario es obligatorio
+          </small>
+        </div>
+
+        <div class="input-group">
+          <label class="field-label">Contraseña</label>
+          <div class="input-wrapper">
+            <span class="input-icon">🔒</span>
+            <input type="password" formControlName="password" placeholder="Ingresa tu contraseña" required>
+          </div>
+          <small *ngIf="form.get('password')?.touched && form.get('password')?.invalid">
+            La contraseña es obligatoria
+          </small>
+        </div>
+
+        <div class="login-actions-row">
+          <label class="remember-me">
+            <input type="checkbox">
+            <span>Recordarme</span>
+          </label>
+
+          <a href="javascript:void(0)" class="forgot-link">¿Olvidaste tu contraseña?</a>
+        </div>
+
+        <button type="submit" class="login-btn">
+          Ingresar
+        </button>
+
+        <p class="error" *ngIf="error">{{ error }}</p>
+      </form>
+
+    </div>
+  </div>
+
+</div>

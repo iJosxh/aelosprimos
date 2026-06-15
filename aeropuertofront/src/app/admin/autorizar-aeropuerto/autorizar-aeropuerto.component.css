@@ -1,0 +1,272 @@
+.autorizacion-container {
+  width: 100%;
+}
+
+.header-card {
+  background: linear-gradient(135deg, #0f172a, #1d4ed8);
+  color: white;
+  padding: 32px;
+  border-radius: 22px;
+  margin-bottom: 26px;
+  box-shadow: 0 16px 35px rgba(15, 23, 42, 0.18);
+}
+
+.badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.16);
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.header-card h1 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 800;
+}
+
+.header-card p {
+  margin: 8px 0 0;
+  color: #dbeafe;
+  font-size: 15px;
+}
+
+.form-card,
+.list-card {
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 30px;
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+  margin-bottom: 26px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 700;
+  color: #1e293b;
+  font-size: 14px;
+}
+
+.form-group select {
+  height: 46px;
+  border-radius: 13px;
+  border: 1px solid #cbd5e1;
+  padding: 0 14px;
+  outline: none;
+  font-size: 14px;
+  color: #0f172a;
+  background: white;
+}
+
+.form-group select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+}
+
+.mensaje {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 24px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.mensaje.error {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.mensaje.exito {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.airport-section {
+  margin-top: 28px;
+}
+
+.section-title,
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.section-title h2,
+.list-header h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 22px;
+}
+
+.section-title span,
+.list-header span {
+  background: #dbeafe;
+  color: #1e40af;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.airport-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.airport-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 16px;
+  padding: 16px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  background: #ffffff;
+}
+
+.airport-card:hover {
+  border-color: #2563eb;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.12);
+}
+
+.airport-card.selected {
+  background: #eff6ff;
+  border-color: #2563eb;
+}
+
+.airport-card input {
+  margin-top: 4px;
+  width: 18px;
+  height: 18px;
+}
+
+.airport-card strong {
+  display: block;
+  color: #0f172a;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.airport-card p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.empty-text {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 14px;
+  padding: 18px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.btn-principal,
+.btn-secundario {
+  height: 46px;
+  padding: 0 24px;
+  border-radius: 13px;
+  border: none;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.btn-principal {
+  background: #2563eb;
+  color: white;
+}
+
+.btn-principal:hover {
+  background: #1d4ed8;
+}
+
+.btn-secundario {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.btn-secundario:hover {
+  background: #cbd5e1;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #f1f5f9;
+}
+
+th,
+td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+  color: #0f172a;
+}
+
+th {
+  font-size: 13px;
+  text-transform: uppercase;
+  color: #475569;
+}
+
+.estado {
+  display: inline-block;
+  background: #dcfce7;
+  color: #166534;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+@media (max-width: 950px) {
+  .form-grid,
+  .airport-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .list-card {
+    overflow-x: auto;
+  }
+
+  .section-title,
+  .list-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}

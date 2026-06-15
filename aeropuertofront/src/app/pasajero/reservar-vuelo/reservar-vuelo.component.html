@@ -1,0 +1,633 @@
+<div class="vuelo-container">
+
+  <section class="header-card">
+    <span class="badge">Pasajero</span>
+    <h1>Reservar Vuelo</h1>
+    <p>
+      Busca vuelos disponibles, revisa la ruta con escalas, selecciona clase,
+      asiento y genera tu pase de abordar.
+    </p>
+  </section>
+
+  <section class="form-card">
+
+    <div class="steps">
+      <div class="step" [class.active]="pasoActual === 1">
+        <span>1</span>
+        <div>
+          <strong>Buscar vuelo</strong>
+          <small>Ruta y fecha</small>
+        </div>
+      </div>
+
+      <div class="step-line"></div>
+
+      <div class="step" [class.active]="pasoActual === 2">
+        <span>2</span>
+        <div>
+          <strong>Reservar</strong>
+          <small>Clase, asiento y equipaje</small>
+        </div>
+      </div>
+
+      <div class="step-line"></div>
+
+      <div class="step" [class.active]="pasoActual === 3">
+        <span>3</span>
+        <div>
+          <strong>Pase</strong>
+          <small>Confirmación</small>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="mensajeError" class="mensaje error">
+      {{ mensajeError }}
+    </div>
+
+    <div *ngIf="mensajeExito" class="mensaje exito">
+      {{ mensajeExito }}
+    </div>
+
+    <!-- PASO 1: BÚSQUEDA -->
+    <form *ngIf="pasoActual === 1" [formGroup]="formBusqueda">
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Aeropuerto de salida</label>
+          <select formControlName="aeropuertoOrigenId">
+            <option [ngValue]="null">Seleccione aeropuerto de salida</option>
+            <option *ngFor="let aeropuerto of aeropuertos" [ngValue]="aeropuerto.idAeropuerto">
+              {{ aeropuerto.nombre }} - {{ aeropuerto.ciudad }}, {{ aeropuerto.pais }}
+            </option>
+          </select>
+
+          <small class="field-warning" *ngIf="campoInvalido(formBusqueda, 'aeropuertoOrigenId')">
+            Debe seleccionar el aeropuerto de salida.
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label>Aeropuerto de llegada</label>
+          <select formControlName="aeropuertoDestinoId">
+            <option [ngValue]="null">Seleccione aeropuerto de llegada</option>
+            <option *ngFor="let aeropuerto of aeropuertos" [ngValue]="aeropuerto.idAeropuerto">
+              {{ aeropuerto.nombre }} - {{ aeropuerto.ciudad }}, {{ aeropuerto.pais }}
+            </option>
+          </select>
+
+          <small class="field-warning" *ngIf="campoInvalido(formBusqueda, 'aeropuertoDestinoId')">
+            Debe seleccionar el aeropuerto de llegada.
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label>Fecha de salida</label>
+          <input type="date" formControlName="fechaSalida" [min]="fechaMinima">
+
+          <small class="field-warning" *ngIf="campoInvalido(formBusqueda, 'fechaSalida')">
+            Debe seleccionar la fecha de salida.
+          </small>
+        </div>
+
+      </div>
+
+      <div class="acciones">
+        <button type="button" class="btn-secundario" (click)="limpiarBusqueda()">
+          Limpiar
+        </button>
+
+        <button
+          type="button"
+          class="btn-principal"
+          (click)="buscarVuelos()"
+          [disabled]="buscandoVuelos || cargando">
+
+          {{ buscandoVuelos ? 'Buscando...' : 'Buscar vuelos' }}
+        </button>
+      </div>
+
+    </form>
+
+    <!-- PASO 2: RESERVA -->
+    <form *ngIf="pasoActual === 2" [formGroup]="formReserva">
+
+      <div class="resumen-card" *ngIf="detalleVuelo">
+        <h3>Vuelo seleccionado</h3>
+
+        <section class="ruta-visual-card" *ngIf="detalleVuelo">
+
+          <div class="ruta-visual-header">
+            <div>
+              <span class="ruta-label">Ruta completa</span>
+              <h3>{{ obtenerRutaCompleta(detalleVuelo) }}</h3>
+            </div>
+
+            <span class="ruta-chip">
+      {{ obtenerTextoEscalas(detalleVuelo) }}
+    </span>
+          </div>
+
+          <div class="ruta-timeline">
+
+            <article class="ruta-stop origen">
+              <span class="stop-dot"></span>
+              <small>Origen</small>
+              <strong>{{ detalleVuelo.aeropuertoOrigen }}</strong>
+              <p>{{ detalleVuelo.ciudadOrigen }}, {{ detalleVuelo.paisOrigen }}</p>
+              <em>Sale: {{ detalleVuelo.fechaSalida | date:'dd/MM/yyyy HH:mm' }}</em>
+            </article>
+
+            <ng-container *ngFor="let escala of obtenerEscalas(detalleVuelo)">
+              <div class="ruta-line"></div>
+
+              <article class="ruta-stop escala">
+                <span class="stop-dot"></span>
+                <small>Escala {{ escala.orden }}</small>
+                <strong>{{ escala.aeropuertoNombre }}</strong>
+                <p>{{ escala.ciudad }}, {{ escala.pais }}</p>
+                <em>
+                  Llega: {{ escala.fechaLlegada | date:'dd/MM/yyyy HH:mm' }}
+                  <br>
+                  Sale: {{ escala.fechaSalida | date:'dd/MM/yyyy HH:mm' }}
+                </em>
+              </article>
+            </ng-container>
+
+            <div class="ruta-line"></div>
+
+            <article class="ruta-stop destino">
+              <span class="stop-dot"></span>
+              <small>Destino</small>
+              <strong>{{ detalleVuelo.aeropuertoDestino }}</strong>
+              <p>{{ detalleVuelo.ciudadDestino }}, {{ detalleVuelo.paisDestino }}</p>
+              <em>Llega: {{ detalleVuelo.fechaLlegada | date:'dd/MM/yyyy HH:mm' }}</em>
+            </article>
+
+          </div>
+
+        </section>
+
+        <div class="resumen-grid">
+          <div>
+            <small>Código de vuelo</small>
+            <strong>{{ detalleVuelo.codigoVuelo }}</strong>
+          </div>
+
+          <div>
+            <small>Aerolínea</small>
+            <strong>{{ detalleVuelo.aerolineaNombre }}</strong>
+          </div>
+
+          <div>
+            <small>Origen</small>
+            <strong>{{ detalleVuelo.aeropuertoOrigen }}</strong>
+            <p>{{ detalleVuelo.ciudadOrigen }}, {{ detalleVuelo.paisOrigen }}</p>
+          </div>
+
+          <div>
+            <small>Destino</small>
+            <strong>{{ detalleVuelo.aeropuertoDestino }}</strong>
+            <p>{{ detalleVuelo.ciudadDestino }}, {{ detalleVuelo.paisDestino }}</p>
+          </div>
+
+          <div>
+            <small>Salida</small>
+            <strong>{{ detalleVuelo.fechaSalida | date:'dd/MM/yyyy HH:mm' }}</strong>
+          </div>
+
+          <div>
+            <small>Llegada</small>
+            <strong>{{ detalleVuelo.fechaLlegada | date:'dd/MM/yyyy HH:mm' }}</strong>
+          </div>
+
+          <div>
+            <small>Avión</small>
+            <strong>{{ detalleVuelo.avionMarca }} {{ detalleVuelo.avionModelo }}</strong>
+            <p>Capacidad: {{ detalleVuelo.avionCapacidad }}</p>
+          </div>
+
+          <div>
+            <small>Estado</small>
+            <strong>{{ detalleVuelo.estado }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="price-grid" *ngIf="detalleVuelo">
+        <div class="price-card">
+          <small>Clase económica</small>
+          <strong>Q {{ detalleVuelo.precioEconomica | number:'1.2-2' }}</strong>
+        </div>
+
+        <div class="price-card">
+          <small>Clase ejecutiva</small>
+          <strong>Q {{ detalleVuelo.precioEjecutiva | number:'1.2-2' }}</strong>
+        </div>
+      </div>
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Clase de vuelo</label>
+          <select formControlName="codigoClaseVuelo">
+            <option [ngValue]="null">Seleccione una clase</option>
+            <option *ngFor="let clase of clasesVuelo" [ngValue]="clase.codigo">
+              {{ clase.valor }}
+            </option>
+          </select>
+
+          <small class="field-warning" *ngIf="campoInvalido(formReserva, 'codigoClaseVuelo')">
+            Debe seleccionar la clase del vuelo.
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label>Asiento disponible</label>
+          <select formControlName="idAsiento">
+            <option [ngValue]="null">Seleccione un asiento</option>
+            <option *ngFor="let asiento of asientosDisponibles" [ngValue]="asiento.idAsiento">
+              {{ asiento.numeroAsiento }} - {{ asiento.tipoAsiento }}
+            </option>
+          </select>
+
+          <small class="field-warning" *ngIf="campoInvalido(formReserva, 'idAsiento')">
+            Debe seleccionar un asiento.
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label>Cantidad de maletas</label>
+          <input type="number" formControlName="cantidadMaletas" min="0">
+
+          <small class="field-warning" *ngIf="campoInvalido(formReserva, 'cantidadMaletas')">
+            Debe ingresar una cantidad válida de maletas.
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label>Precio seleccionado</label>
+          <input
+            type="text"
+            [value]="formReserva.get('precioSeleccionado')?.value ? ('Q ' + (formReserva.get('precioSeleccionado')?.value | number:'1.2-2')) : ''"
+            disabled>
+        </div>
+
+      </div>
+
+      <div class="acciones">
+        <button type="button" class="btn-secundario" (click)="volverABusqueda()">
+          Volver
+        </button>
+
+        <button
+          type="button"
+          class="btn-principal"
+          (click)="reservarVuelo()"
+          [disabled]="reservando || cargandoDetalle || asientosDisponibles.length === 0">
+
+          {{ reservando ? 'Reservando...' : 'Confirmar reserva' }}
+        </button>
+      </div>
+
+    </form>
+
+    <!-- PASO 3: PASE DE ABORDAR -->
+    <div *ngIf="pasoActual === 3">
+
+      <div class="boarding-pass" *ngIf="paseAbordar">
+
+        <div class="boarding-top">
+          <div>
+            <span class="badge boarding-badge">Pase de abordar</span>
+            <h2>{{ paseAbordar.codigoPaseAbordar }}</h2>
+          </div>
+
+          <div class="boarding-code">
+            {{ paseAbordar.codigoVuelo }}
+          </div>
+        </div>
+
+        <div class="boarding-route">
+          <div>
+            <small>Origen</small>
+            <strong>{{ paseAbordar.aeropuertoOrigen }}</strong>
+            <p>{{ paseAbordar.ciudadOrigen }}, {{ paseAbordar.paisOrigen }}</p>
+          </div>
+
+          <div class="plane-line">
+            ✈
+          </div>
+
+          <div>
+            <small>Destino</small>
+            <strong>{{ paseAbordar.aeropuertoDestino }}</strong>
+            <p>{{ paseAbordar.ciudadDestino }}, {{ paseAbordar.paisDestino }}</p>
+          </div>
+        </div>
+
+        <section class="ruta-visual-card boarding-ruta-visual" *ngIf="detalleVuelo">
+
+          <div class="ruta-visual-header">
+            <div>
+              <span class="ruta-label">Ruta completa</span>
+              <h3>{{ obtenerRutaCompleta(detalleVuelo) }}</h3>
+            </div>
+
+            <span class="ruta-chip">
+      {{ obtenerTextoEscalas(detalleVuelo) }}
+    </span>
+          </div>
+
+          <div class="ruta-timeline">
+
+            <article class="ruta-stop origen">
+              <span class="stop-dot"></span>
+              <small>Origen</small>
+              <strong>{{ detalleVuelo.aeropuertoOrigen }}</strong>
+              <p>{{ detalleVuelo.ciudadOrigen }}, {{ detalleVuelo.paisOrigen }}</p>
+              <em>Sale: {{ detalleVuelo.fechaSalida | date:'dd/MM/yyyy HH:mm' }}</em>
+            </article>
+
+            <ng-container *ngFor="let escala of obtenerEscalas(detalleVuelo)">
+              <div class="ruta-line"></div>
+
+              <article class="ruta-stop escala">
+                <span class="stop-dot"></span>
+                <small>Escala {{ escala.orden }}</small>
+                <strong>{{ escala.aeropuertoNombre }}</strong>
+                <p>{{ escala.ciudad }}, {{ escala.pais }}</p>
+                <em>
+                  Llega: {{ escala.fechaLlegada | date:'dd/MM/yyyy HH:mm' }}
+                  <br>
+                  Sale: {{ escala.fechaSalida | date:'dd/MM/yyyy HH:mm' }}
+                </em>
+              </article>
+            </ng-container>
+
+            <div class="ruta-line"></div>
+
+            <article class="ruta-stop destino">
+              <span class="stop-dot"></span>
+              <small>Destino</small>
+              <strong>{{ detalleVuelo.aeropuertoDestino }}</strong>
+              <p>{{ detalleVuelo.ciudadDestino }}, {{ detalleVuelo.paisDestino }}</p>
+              <em>Llega: {{ detalleVuelo.fechaLlegada | date:'dd/MM/yyyy HH:mm' }}</em>
+            </article>
+
+          </div>
+
+        </section>
+
+        <div class="boarding-grid">
+
+          <div>
+            <small>Pasajero</small>
+            <strong>{{ paseAbordar.nombrePasajero }}</strong>
+          </div>
+
+          <div>
+            <small>Pasaporte</small>
+            <strong>{{ paseAbordar.numeroPasaporte }}</strong>
+          </div>
+
+          <div>
+            <small>Nacionalidad</small>
+            <strong>{{ paseAbordar.nacionalidad }}</strong>
+          </div>
+
+          <div>
+            <small>Aerolínea</small>
+            <strong>{{ paseAbordar.aerolineaNombre }}</strong>
+          </div>
+
+          <div>
+            <small>Salida</small>
+            <strong>{{ paseAbordar.fechaSalida | date:'dd/MM/yyyy HH:mm' }}</strong>
+          </div>
+
+          <div>
+            <small>Llegada</small>
+            <strong>{{ paseAbordar.fechaLlegada | date:'dd/MM/yyyy HH:mm' }}</strong>
+          </div>
+
+          <div>
+            <small>Clase</small>
+            <strong>{{ paseAbordar.claseVuelo }}</strong>
+          </div>
+
+          <div>
+            <small>Asiento</small>
+            <strong>{{ paseAbordar.asiento }}</strong>
+          </div>
+
+          <div>
+            <small>Maletas</small>
+            <strong>{{ paseAbordar.cantidadMaletas }}</strong>
+          </div>
+
+          <div>
+            <small>Precio pagado</small>
+            <strong>Q {{ paseAbordar.precioPagado | number:'1.2-2' }}</strong>
+          </div>
+
+          <div>
+            <small>Estado</small>
+            <strong>{{ paseAbordar.estado }}</strong>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="acciones">
+        <button type="button" class="btn-secundario" (click)="nuevaReserva()">
+          Nueva reserva
+        </button>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- LISTADO DE VUELOS DISPONIBLES -->
+  <section class="list-card" *ngIf="pasoActual === 1">
+
+    <div class="list-header">
+      <div>
+        <h2>Vuelos disponibles</h2>
+        <p>
+          Resultados según los filtros ingresados.
+        </p>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table>
+        <thead>
+        <tr>
+          <th>Código</th>
+          <th>Aerolínea</th>
+          <th>Ruta</th>
+          <th>Escalas</th>
+          <th>Origen</th>
+          <th>Destino</th>
+          <th>Salida</th>
+          <th>Llegada</th>
+          <th>Económica</th>
+          <th>Ejecutiva</th>
+          <th>Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr *ngFor="let vuelo of vuelosDisponibles">
+          <td>{{ vuelo.codigoVuelo }}</td>
+          <td>{{ vuelo.aerolineaNombre }}</td>
+          <td class="ruta-tabla">{{ obtenerRutaCompleta(vuelo) }}</td>
+          <td>
+            <span class="escala-badge">
+              {{ obtenerTextoEscalas(vuelo) }}
+            </span>
+          </td>
+          <td>{{ vuelo.aeropuertoOrigen }}</td>
+          <td>{{ vuelo.aeropuertoDestino }}</td>
+          <td>{{ vuelo.fechaSalida | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>{{ vuelo.fechaLlegada | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>Q {{ vuelo.precioEconomica | number:'1.2-2' }}</td>
+          <td>Q {{ vuelo.precioEjecutiva | number:'1.2-2' }}</td>
+          <td>
+            <div class="table-actions">
+              <button type="button" class="btn-tabla secundario" (click)="verDetalleVuelo(vuelo)">
+                Ver
+              </button>
+
+              <button type="button" class="btn-tabla principal" (click)="seleccionarVuelo(vuelo)">
+                Seleccionar
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        <tr *ngIf="vuelosDisponibles.length === 0">
+          <td colspan="11" class="empty">
+            No hay vuelos disponibles para mostrar.
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+
+  <!-- DETALLE RÁPIDO CUANDO SE PRESIONA VER -->
+  <section class="list-card" *ngIf="pasoActual === 1 && detalleVuelo">
+
+    <div class="list-header">
+      <div>
+        <h2>Detalle del vuelo</h2>
+        <p>Información completa del vuelo seleccionado.</p>
+      </div>
+    </div>
+
+    <section class="ruta-visual-card detalle-ruta" *ngIf="detalleVuelo">
+
+      <div class="ruta-visual-header">
+        <div>
+          <span class="ruta-label">Ruta completa</span>
+          <h3>{{ obtenerRutaCompleta(detalleVuelo) }}</h3>
+        </div>
+
+        <span class="ruta-chip">
+      {{ obtenerTextoEscalas(detalleVuelo) }}
+    </span>
+      </div>
+
+      <div class="ruta-timeline">
+
+        <article class="ruta-stop origen">
+          <span class="stop-dot"></span>
+          <small>Origen</small>
+          <strong>{{ detalleVuelo.aeropuertoOrigen }}</strong>
+          <p>{{ detalleVuelo.ciudadOrigen }}, {{ detalleVuelo.paisOrigen }}</p>
+          <em>Sale: {{ detalleVuelo.fechaSalida | date:'dd/MM/yyyy HH:mm' }}</em>
+        </article>
+
+        <ng-container *ngFor="let escala of obtenerEscalas(detalleVuelo)">
+          <div class="ruta-line"></div>
+
+          <article class="ruta-stop escala">
+            <span class="stop-dot"></span>
+            <small>Escala {{ escala.orden }}</small>
+            <strong>{{ escala.aeropuertoNombre }}</strong>
+            <p>{{ escala.ciudad }}, {{ escala.pais }}</p>
+            <em>
+              Llega: {{ escala.fechaLlegada | date:'dd/MM/yyyy HH:mm' }}
+              <br>
+              Sale: {{ escala.fechaSalida | date:'dd/MM/yyyy HH:mm' }}
+            </em>
+          </article>
+        </ng-container>
+
+        <div class="ruta-line"></div>
+
+        <article class="ruta-stop destino">
+          <span class="stop-dot"></span>
+          <small>Destino</small>
+          <strong>{{ detalleVuelo.aeropuertoDestino }}</strong>
+          <p>{{ detalleVuelo.ciudadDestino }}, {{ detalleVuelo.paisDestino }}</p>
+          <em>Llega: {{ detalleVuelo.fechaLlegada | date:'dd/MM/yyyy HH:mm' }}</em>
+        </article>
+
+      </div>
+
+    </section>
+
+    <div class="detalle-grid">
+      <div>
+        <small>Código</small>
+        <strong>{{ detalleVuelo.codigoVuelo }}</strong>
+      </div>
+
+      <div>
+        <small>Aerolínea</small>
+        <strong>{{ detalleVuelo.aerolineaNombre }}</strong>
+      </div>
+
+      <div>
+        <small>Avión</small>
+        <strong>{{ detalleVuelo.avionMarca }} {{ detalleVuelo.avionModelo }}</strong>
+      </div>
+
+      <div>
+        <small>Capacidad</small>
+        <strong>{{ detalleVuelo.avionCapacidad }}</strong>
+      </div>
+
+      <div>
+        <small>Origen</small>
+        <strong>{{ detalleVuelo.aeropuertoOrigen }}</strong>
+        <p>{{ detalleVuelo.ciudadOrigen }}, {{ detalleVuelo.paisOrigen }}</p>
+      </div>
+
+      <div>
+        <small>Destino</small>
+        <strong>{{ detalleVuelo.aeropuertoDestino }}</strong>
+        <p>{{ detalleVuelo.ciudadDestino }}, {{ detalleVuelo.paisDestino }}</p>
+      </div>
+
+      <div>
+        <small>Salida</small>
+        <strong>{{ detalleVuelo.fechaSalida | date:'dd/MM/yyyy HH:mm' }}</strong>
+      </div>
+
+      <div>
+        <small>Llegada</small>
+        <strong>{{ detalleVuelo.fechaLlegada | date:'dd/MM/yyyy HH:mm' }}</strong>
+      </div>
+    </div>
+
+  </section>
+
+</div>

@@ -1,0 +1,194 @@
+<div class="page-container">
+
+  <section class="header-card">
+    <div class="header-content">
+      <span class="badge">Consultas</span>
+
+      <h1>Reporte de Vuelos</h1>
+
+      <p>
+        Consulta vuelos por fecha y hora de salida, y genera reportes en PDF o Excel.
+      </p>
+    </div>
+  </section>
+
+  <section class="steps">
+    <div class="step active">
+      <span>1</span>
+      <div>
+        <h3>Filtros</h3>
+        <p>Ingrese rango de fecha y hora.</p>
+      </div>
+    </div>
+
+    <div class="step" [class.active]="busquedaRealizada">
+      <span>2</span>
+      <div>
+        <h3>Consulta</h3>
+        <p>Visualice los vuelos encontrados.</p>
+      </div>
+    </div>
+
+    <div class="step" [class.active]="vuelos.length > 0">
+      <span>3</span>
+      <div>
+        <h3>Exportar</h3>
+        <p>Genere PDF o Excel.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="form-card">
+    <div class="section-title">
+      <h2>Parámetros de consulta</h2>
+      <p>Los filtros son opcionales. Si se ingresa uno, debe completarse todo el rango.</p>
+    </div>
+
+    <form [formGroup]="formulario" class="form-grid">
+
+      <div class="form-field">
+        <label for="fechaDesde">Fecha desde</label>
+        <input
+          id="fechaDesde"
+          type="date"
+          formControlName="fechaDesde"
+        />
+      </div>
+
+      <div class="form-field">
+        <label for="horaDesde">Hora desde</label>
+        <input
+          id="horaDesde"
+          type="time"
+          formControlName="horaDesde"
+        />
+      </div>
+
+      <div class="form-field">
+        <label for="fechaHasta">Fecha hasta</label>
+        <input
+          id="fechaHasta"
+          type="date"
+          formControlName="fechaHasta"
+        />
+      </div>
+
+      <div class="form-field">
+        <label for="horaHasta">Hora hasta</label>
+        <input
+          id="horaHasta"
+          type="time"
+          formControlName="horaHasta"
+        />
+      </div>
+
+    </form>
+
+    <div *ngIf="mensajeError" class="mensaje error">
+      {{ mensajeError }}
+    </div>
+
+    <div *ngIf="mensajeExito" class="mensaje exito">
+      {{ mensajeExito }}
+    </div>
+
+    <div class="acciones">
+      <button
+        type="button"
+        class="btn primary"
+        (click)="buscar()"
+        [disabled]="cargando"
+      >
+        {{ cargando ? 'Buscando...' : 'Buscar' }}
+      </button>
+
+      <button
+        type="button"
+        class="btn secondary"
+        (click)="limpiar()"
+        [disabled]="cargando || descargandoPdf || descargandoExcel"
+      >
+        Limpiar
+      </button>
+
+      <button
+        type="button"
+        class="btn outline"
+        (click)="descargarPdf()"
+        [disabled]="descargandoPdf || vuelos.length === 0"
+      >
+        {{ descargandoPdf ? 'Generando PDF...' : 'Imprimir' }}
+      </button>
+
+      <button
+        type="button"
+        class="btn outline"
+        (click)="descargarExcel()"
+        [disabled]="descargandoExcel || vuelos.length === 0"
+      >
+        {{ descargandoExcel ? 'Generando Excel...' : 'Excel' }}
+      </button>
+
+      <button
+        type="button"
+        class="btn nueva-consulta"
+        (click)="nuevaConsulta()"
+        [disabled]="cargando || descargandoPdf || descargandoExcel"
+      >
+        Nueva consulta
+      </button>
+    </div>
+  </section>
+
+  <section class="list-card" *ngIf="busquedaRealizada">
+    <div class="list-header">
+      <div>
+        <h2>Resultado de vuelos</h2>
+        <p *ngIf="vuelos.length > 0">
+          Total de registros: {{ vuelos.length }}
+        </p>
+      </div>
+    </div>
+
+    <div *ngIf="cargando" class="empty-state">
+      Consultando vuelos...
+    </div>
+
+    <div *ngIf="!cargando && vuelos.length === 0" class="empty-state">
+      No hay datos para mostrar.
+    </div>
+
+    <div class="table-wrapper" *ngIf="!cargando && vuelos.length > 0">
+      <table>
+        <thead>
+        <tr>
+          <th>Número de vuelo</th>
+          <th>Modelo de avión</th>
+          <th>Aerolínea</th>
+          <th>Origen</th>
+          <th>Destino</th>
+          <th>Fecha salida</th>
+          <th>Hora salida</th>
+          <th>Fecha llegada</th>
+          <th>Hora llegada</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr *ngFor="let vuelo of vuelos">
+          <td>{{ vuelo.numeroVuelo }}</td>
+          <td>{{ vuelo.modeloAvion }}</td>
+          <td>{{ vuelo.aerolinea }}</td>
+          <td>{{ vuelo.origen }}</td>
+          <td>{{ vuelo.destino }}</td>
+          <td>{{ vuelo.fechaSalida | date:'dd/MM/yyyy' }}</td>
+          <td>{{ vuelo.horaSalida }}</td>
+          <td>{{ vuelo.fechaLlegada | date:'dd/MM/yyyy' }}</td>
+          <td>{{ vuelo.horaLlegada }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>

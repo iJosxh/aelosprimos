@@ -1,0 +1,147 @@
+<div class="page-container">
+
+  <section class="header-card">
+    <span class="badge">Consultas</span>
+    <h1>Reporte de equipaje por vuelo</h1>
+    <p>Consulte el equipaje registrado para un vuelo específico y genere archivos PDF o Excel.</p>
+  </section>
+
+  <section class="steps">
+    <article class="step active">
+      <div class="step-number">1</div>
+      <div>
+        <h3>Filtro</h3>
+        <p>Ingrese el número de vuelo.</p>
+      </div>
+    </article>
+
+    <article class="step" [class.active]="busquedaRealizada">
+      <div class="step-number">2</div>
+      <div>
+        <h3>Consulta</h3>
+        <p>Revise el equipaje encontrado.</p>
+      </div>
+    </article>
+
+    <article class="step" [class.active]="equipajes.length > 0">
+      <div class="step-number">3</div>
+      <div>
+        <h3>Exportar</h3>
+        <p>Genere PDF o Excel.</p>
+      </div>
+    </article>
+  </section>
+
+  <section class="form-card">
+    <form [formGroup]="formulario" (ngSubmit)="buscar()">
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="numeroVuelo">Número de vuelo</label>
+          <input
+            id="numeroVuelo"
+            type="text"
+            formControlName="numeroVuelo"
+            placeholder="Ejemplo: ALP-001">
+
+          <small class="field-error" *ngIf="campoInvalido('numeroVuelo')">
+            Debe ingresar los campos obligatorios
+          </small>
+        </div>
+      </div>
+
+      <div class="acciones">
+        <button type="submit" class="btn-primary" [disabled]="cargando">
+          {{ cargando ? 'Buscando...' : 'Buscar' }}
+        </button>
+
+        <button type="button" class="btn-secondary" (click)="limpiar()" [disabled]="cargando">
+          Limpiar
+        </button>
+
+        <button
+          type="button"
+          class="btn-print"
+          (click)="descargarPdf()"
+          [disabled]="descargandoPdf || equipajes.length === 0">
+          {{ descargandoPdf ? 'Generando PDF...' : 'PDF / Imprimir' }}
+        </button>
+
+        <button
+          type="button"
+          class="btn-excel"
+          (click)="descargarExcel()"
+          [disabled]="descargandoExcel || equipajes.length === 0">
+          {{ descargandoExcel ? 'Generando Excel...' : 'Excel' }}
+        </button>
+
+        <button type="button" class="btn-light" (click)="nuevaConsulta()">
+          Nueva consulta
+        </button>
+      </div>
+
+    </form>
+  </section>
+
+  <div class="mensaje error" *ngIf="mensajeError">
+    {{ mensajeError }}
+  </div>
+
+  <div class="mensaje exito" *ngIf="mensajeExito">
+    {{ mensajeExito }}
+  </div>
+
+  <section class="summary-grid" *ngIf="equipajes.length > 0">
+    <article class="summary-card">
+      <span>Total de maletas</span>
+      <strong>{{ obtenerTotalMaletas() }}</strong>
+    </article>
+
+    <article class="summary-card">
+      <span>Peso total</span>
+      <strong>{{ obtenerPesoTotal() | number:'1.2-2' }} lb</strong>
+    </article>
+
+    <article class="summary-card">
+      <span>Vuelo consultado</span>
+      <strong>{{ equipajes[0].numeroVuelo }}</strong>
+    </article>
+  </section>
+
+  <section class="list-card" *ngIf="equipajes.length > 0">
+    <div class="list-header">
+      <div>
+        <h2>Equipaje registrado</h2>
+        <p>Datos generados según el número de vuelo consultado.</p>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+        <tr>
+          <th>#</th>
+          <th>Nombre del pasajero</th>
+          <th>Maleta</th>
+          <th>Peso</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr *ngFor="let item of equipajes; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ item.nombrePasajero }}</td>
+          <td>{{ item.maleta }}</td>
+          <td>{{ item.peso | number:'1.2-2' }} lb</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="empty-card" *ngIf="busquedaRealizada && equipajes.length === 0 && !mensajeError">
+    <h3>No hay datos para mostrar</h3>
+    <p>No se encontraron equipajes para el vuelo consultado.</p>
+  </section>
+
+</div>
