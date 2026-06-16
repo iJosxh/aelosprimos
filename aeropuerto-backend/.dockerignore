@@ -1,0 +1,12 @@
+target/
+.idea/
+.vscode/
+*.iml
+*.log
+.env
+.env.*
+*.sql
+*.zip
+node_modules/
+.angular/
+dist/
