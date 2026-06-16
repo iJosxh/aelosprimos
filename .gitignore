@@ -53,7 +53,6 @@ pnpm-debug.log*
 .env.*
 *.env
 
-application.properties
 application-dev.properties
 application-prod.properties
 application-secret.properties
