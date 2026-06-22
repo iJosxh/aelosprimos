@@ -133,3 +133,37 @@
 .arrow.rotate {
   transform: rotate(180deg);
 }
+
+@media (max-width: 768px) {
+  .layout {
+    display: block;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 280px;
+    min-width: 280px;
+    height: 100vh;
+    z-index: 3000;
+    transition: left 0.3s ease;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+    padding: 16px;
+  }
+
+  .navbar,
+  .topbar,
+  .header-navbar {
+    width: 100%;
+    margin-left: 0;
+  }
+}

@@ -3,7 +3,7 @@
   <!-- NAVBAR -->
   <header class="navbar">
 
-    <div class="brand">
+    <div class="brand" routerLink="/">
       <div class="brand-icon">✈</div>
       <div>
         <h2>Aeropuerto</h2>
@@ -13,8 +13,9 @@
 
     <nav class="nav-links">
       <a href="#informacion">Información</a>
+      <a href="#accesos">Accesos</a>
       <a href="#destinos">Destinos</a>
-      <a href="#ofertas">Ofertas</a>
+      <a href="#roles">Operaciones</a>
       <a routerLink="/consulta-vuelo">Consulta vuelo</a>
     </nav>
 
@@ -32,29 +33,33 @@
       <span class="hero-label">Sistema aeroportuario</span>
 
       <h1>
-        Viaja, reserva y administra tus vuelos de forma sencilla
+        Gestiona vuelos, reservas y abordajes desde una sola plataforma
       </h1>
 
       <p>
-        Plataforma diseñada para gestionar vuelos, pasajeros, reservas y servicios
-        aeroportuarios desde un entorno moderno, seguro y fácil de usar.
+        Aeropuerto Los Primos centraliza los procesos de pasajeros, aerolíneas,
+        vuelos, reportes y abordaje en un entorno moderno, seguro y fácil de usar.
       </p>
 
       <div class="hero-buttons">
         <button class="btn-primary large" routerLink="/login">
-          Iniciar ahora
+          Iniciar sesión
         </button>
 
-        <button class="btn-glass" routerLink="/registro">
+        <button class="btn-glass large" routerLink="/registro">
           Crear cuenta
+        </button>
+
+        <button class="btn-glass large" routerLink="/consulta-vuelo">
+          Consultar vuelo
         </button>
       </div>
     </div>
 
     <div class="hero-card">
       <div class="flight-top">
-        <span>Próximo vuelo</span>
-        <strong>Activo</strong>
+        <span>Vista rápida de vuelo</span>
+        <strong>Ejemplo</strong>
       </div>
 
       <div class="flight-route">
@@ -82,13 +87,13 @@
         </div>
 
         <div>
-          <span>Hora</span>
+          <span>Salida</span>
           <strong>14:10</strong>
         </div>
 
         <div>
-          <span>Puerta</span>
-          <strong>B12</strong>
+          <span>Estado</span>
+          <strong>Programado</strong>
         </div>
       </div>
     </div>
@@ -102,8 +107,8 @@
       <span>Información</span>
       <h2>Una plataforma pensada para facilitar la experiencia aeroportuaria</h2>
       <p>
-        Este sistema permite organizar procesos importantes como registros,
-        vuelos, reservas y consulta de información para usuarios del aeropuerto.
+        El sistema permite organizar procesos importantes como registros,
+        reservas, vuelos, abordaje, reportes y consultas públicas para usuarios del aeropuerto.
       </p>
     </div>
 
@@ -112,19 +117,57 @@
       <div class="info-card">
         <div class="info-icon">🔐</div>
         <h3>Acceso seguro</h3>
-        <p>Inicio de sesión con autenticación JWT y control por roles.</p>
+        <p>Inicio de sesión con autenticación JWT y control de opciones según el rol del usuario.</p>
       </div>
 
       <div class="info-card">
         <div class="info-icon">🧳</div>
-        <h3>Gestión de pasajeros</h3>
-        <p>Consulta y organización de información relacionada con pasajeros.</p>
+        <h3>Reservas y pasajeros</h3>
+        <p>Los pasajeros pueden registrarse, consultar vuelos y gestionar sus reservas.</p>
       </div>
 
       <div class="info-card">
         <div class="info-icon">🛫</div>
         <h3>Control de vuelos</h3>
-        <p>Base preparada para administrar información de vuelos y operaciones.</p>
+        <p>Las aerolíneas pueden administrar vuelos, tripulación, aviones y reportes operativos.</p>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ACCESOS RÁPIDOS -->
+  <section class="quick-section" id="accesos">
+
+    <div class="section-header">
+      <span>Accesos rápidos</span>
+      <h2>Elige qué necesitas hacer</h2>
+      <p>
+        Accede directamente a las funciones principales del portal.
+      </p>
+    </div>
+
+    <div class="quick-grid">
+
+      <div class="quick-card" routerLink="/consulta-vuelo">
+        <div class="quick-icon">🔎</div>
+        <h3>Consultar vuelo</h3>
+        <p>Busca la información de un vuelo por su número.</p>
+        <span>Ir a consulta</span>
+      </div>
+
+      <div class="quick-card" routerLink="/registro">
+        <div class="quick-icon">👤</div>
+        <h3>Crear cuenta</h3>
+        <p>Regístrate como pasajero para usar los servicios del aeropuerto.</p>
+        <span>Registrarme</span>
+      </div>
+
+      <div class="quick-card" routerLink="/login">
+        <div class="quick-icon">🔐</div>
+        <h3>Ingresar al sistema</h3>
+        <p>Accede según tu rol: pasajero, aerolínea, abordaje o administración.</p>
+        <span>Iniciar sesión</span>
       </div>
 
     </div>
@@ -140,9 +183,6 @@
         <h2>Destinos destacados</h2>
       </div>
 
-      <p>
-        Una vista informativa para mostrar posibles destinos disponibles dentro del sistema.
-      </p>
     </div>
 
     <div class="destinos-grid">
@@ -175,22 +215,62 @@
 
   </section>
 
-  <!-- OFERTAS -->
+  <!-- ROLES / OPERACIONES -->
+  <section class="roles-section" id="roles">
+
+    <div class="section-header">
+      <span>Operaciones</span>
+      <h2>Una plataforma para cada tipo de usuario</h2>
+      <p>
+        El sistema separa las funciones por rol para mantener una operación más ordenada y segura.
+      </p>
+    </div>
+
+    <div class="roles-grid">
+
+      <div class="role-card">
+        <div class="role-number">01</div>
+        <h3>Pasajeros</h3>
+        <p>Registro, consulta de vuelos y reserva de boletos.</p>
+      </div>
+
+      <div class="role-card">
+        <div class="role-number">02</div>
+        <h3>Aerolíneas</h3>
+        <p>Gestión de vuelos, aviones, tripulación y reportes.</p>
+      </div>
+
+      <div class="role-card">
+        <div class="role-number">03</div>
+        <h3>Abordaje</h3>
+        <p>Control de pasajeros, maletas y cierre de abordaje.</p>
+      </div>
+
+      <div class="role-card">
+        <div class="role-number">04</div>
+        <h3>Administración</h3>
+        <p>Gestión general de usuarios, catálogos y configuración del sistema.</p>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- AVISOS -->
   <section class="offers-section" id="ofertas">
 
     <div class="offer-card">
 
       <div>
-        <span>Ofertas</span>
-        <h2>Promociones y avisos del aeropuerto</h2>
+        <span>Avisos</span>
+        <h2>Consulta información importante del aeropuerto</h2>
         <p>
-          Esta sección puede utilizarse más adelante para mostrar promociones,
-          anuncios importantes o información temporal para los pasajeros.
+          Revisa el estado de tus vuelos y accede a los servicios disponibles para pasajeros.
         </p>
       </div>
 
-      <button class="btn-primary">
-        Ver información
+      <button class="btn-primary" routerLink="/consulta-vuelo">
+        Consultar vuelo
       </button>
 
     </div>
@@ -199,8 +279,16 @@
 
   <!-- FOOTER -->
   <footer class="footer">
-    <p>Aeropuerto Los Primos © 2026</p>
-    <span>Sistema de gestión aeroportuaria</span>
+    <div>
+      <p>Aeropuerto Los Primos © 2026</p>
+      <small>Sistema de gestión aeroportuaria</small>
+    </div>
+
+    <div class="footer-links">
+      <a routerLink="/consulta-vuelo">Consulta vuelo</a>
+      <a routerLink="/registro">Registro</a>
+      <a routerLink="/login">Login</a>
+    </div>
   </footer>
 
 </div>
