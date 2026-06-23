@@ -1,16 +1,18 @@
 <div class="navbar">
 
-  <button
-    type="button"
-    class="menu-toggle"
-    (click)="onAbrirMenu()"
-    aria-label="Abrir menú">
-    ☰
-  </button>
+  <div class="navbar-left">
+    <button
+      type="button"
+      class="menu-toggle"
+      (click)="onAbrirMenu()"
+      aria-label="Abrir menú">
+      ☰
+    </button>
 
-  <div>
-    <h3>Dashboard</h3>
-    <p>Panel principal del sistema aeroportuario</p>
+    <div class="navbar-title">
+      <h3>{{ tituloNavbar }}</h3>
+      <p>{{ descripcionNavbar }}</p>
+    </div>
   </div>
 
   <div class="user-section">

@@ -1,13 +1,18 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .sidebar {
-  width: 280px;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   background: linear-gradient(180deg, #07111f 0%, #102033 55%, #172b45 100%);
   color: #ffffff;
   padding: 24px 18px;
   display: flex;
   flex-direction: column;
   box-shadow: 4px 0 20px rgba(15, 23, 42, 0.18);
-  flex-shrink: 0;
   box-sizing: border-box;
   overflow-y: auto;
 }
@@ -21,6 +26,7 @@
 
 .brand-icon {
   width: 48px;
+  min-width: 48px;
   height: 48px;
   border-radius: 16px;
   background: linear-gradient(135deg, #38bdf8, #2563eb);
@@ -75,6 +81,7 @@
 
 .icon {
   font-size: 20px;
+  min-width: 24px;
 }
 
 .sidebar-footer {
@@ -100,12 +107,6 @@
   margin: 6px 0 12px 0;
 }
 
-.submenu a.active-submenu {
-  background: rgba(59, 130, 246, 0.32);
-  color: white;
-  font-weight: 700;
-}
-
 .submenu li {
   margin-top: 8px;
 }
@@ -125,6 +126,12 @@
   color: white;
 }
 
+.submenu a.active-submenu {
+  background: rgba(59, 130, 246, 0.32);
+  color: white;
+  font-weight: 700;
+}
+
 .arrow {
   margin-left: auto;
   transition: transform 0.2s ease;
@@ -132,38 +139,4 @@
 
 .arrow.rotate {
   transform: rotate(180deg);
-}
-
-@media (max-width: 768px) {
-  .layout {
-    display: block;
-  }
-
-  .sidebar {
-    position: fixed;
-    top: 0;
-    left: -280px;
-    width: 280px;
-    min-width: 280px;
-    height: 100vh;
-    z-index: 3000;
-    transition: left 0.3s ease;
-  }
-
-  .sidebar.open {
-    left: 0;
-  }
-
-  .main-content {
-    margin-left: 0;
-    width: 100%;
-    padding: 16px;
-  }
-
-  .navbar,
-  .topbar,
-  .header-navbar {
-    width: 100%;
-    margin-left: 0;
-  }
 }
