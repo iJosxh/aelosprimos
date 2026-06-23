@@ -21,6 +21,7 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
 export class MainLayoutComponent implements OnInit {
 
   rol: string = '';
+  sidebarAbierto = false;
 
   ngOnInit(): void {
     const token = localStorage.getItem('token');
@@ -31,5 +32,13 @@ export class MainLayoutComponent implements OnInit {
 
       this.rol = decodedToken?.rol || '';
     }
+  }
+
+  toggleSidebar(): void {
+    this.sidebarAbierto = !this.sidebarAbierto;
+  }
+
+  cerrarSidebar(): void {
+    this.sidebarAbierto = false;
   }
 }

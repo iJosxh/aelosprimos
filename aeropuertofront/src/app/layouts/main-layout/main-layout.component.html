@@ -1,10 +1,20 @@
 <div class="layout">
 
-  <app-sidebar [rol]="rol"></app-sidebar>
+  <app-sidebar
+    class="sidebar-wrapper"
+    [class.sidebar-open]="sidebarAbierto"
+    [rol]="rol">
+  </app-sidebar>
+
+  <div
+    class="sidebar-overlay"
+    *ngIf="sidebarAbierto"
+    (click)="cerrarSidebar()">
+  </div>
 
   <div class="main-content">
 
-    <app-navbar></app-navbar>
+    <app-navbar (abrirMenu)="toggleSidebar()"></app-navbar>
 
     <div class="contenido">
       <router-outlet></router-outlet>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 
@@ -13,6 +13,8 @@ export class NavbarComponent implements OnInit {
 
   username: string = '';
   inicialUsuario: string = 'U';
+
+  @Output() abrirMenu = new EventEmitter<void>();
 
   constructor(private router: Router) {}
 
@@ -35,6 +37,10 @@ export class NavbarComponent implements OnInit {
     this.inicialUsuario = this.username
       ? this.username.charAt(0).toUpperCase()
       : 'U';
+  }
+
+  onAbrirMenu(): void {
+    this.abrirMenu.emit();
   }
 
   cerrarSesion(): void {
